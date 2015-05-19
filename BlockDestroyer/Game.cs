@@ -7,6 +7,9 @@ namespace BlockDestroyer
     class Game
     {
         private Random _randomGen;
+        /// <summary>
+        ///     Field holding game score
+        /// </summary>
         private int Score { get; set; }
         const string BlockString = "████";
 

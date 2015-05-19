@@ -1,16 +1,12 @@
-﻿using System.Diagnostics;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace BlockDestroyer
 {
-    class Program
+    static class Program
     {
         static void Main(string[] args)
         {
+            Console.Title = "BlockDestroyer";
             Game game = new Game();
             game.Start();
         }
