@@ -86,6 +86,8 @@ namespace BlockDestroyer
             // Draw Score and lives
             for (int i = 0; i < Console.WindowWidth; i++) // Score Divider
                 Writer.WriteCharAtPosition(i, 5, '-');
+
+            Writer.WriteStringAtPosition(0, 0, string.Format("Score: {0}", Score), ConsoleColor.DarkRed);
         }
     }
 }

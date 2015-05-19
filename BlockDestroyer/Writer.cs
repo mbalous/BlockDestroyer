@@ -7,11 +7,13 @@ namespace BlockDestroyer
     /// </summary>
     static class Writer
     {
+
         public static void WriteCharAtPosition(int x, int y, char @char, ConsoleColor color)
         {
             Console.SetCursorPosition(x, y);
             Console.ForegroundColor = color;
             Console.Write(@char);
+            Console.ResetColor();
         }
 
         public static void WriteCharAtPosition(int x, int y, char @char)
@@ -25,6 +27,7 @@ namespace BlockDestroyer
             Console.SetCursorPosition(x, y);
             Console.ForegroundColor = color;
             Console.Write(text);
+            Console.ResetColor();
         }
 
         public static void WriteStringAtPosition(int x, int y, string text)
