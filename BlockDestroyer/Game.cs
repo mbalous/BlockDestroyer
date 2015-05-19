@@ -34,7 +34,7 @@ namespace BlockDestroyer
             _randomGen = new Random();
         }
 
-        public static void Start()
+        public void Start()
         {
             bool[,] blocksArray = new bool[5, 20]; // [rows, columns]
             FillBlocksArray(blocksArray);
@@ -47,7 +47,7 @@ namespace BlockDestroyer
             }
         }
 
-        private static void FillBlocksArray(bool[,] blocksArray)
+        private void FillBlocksArray(bool[,] blocksArray)
         {
             for (int i = 0; i < blocksArray.GetLength(0); i++)
             {
@@ -59,7 +59,7 @@ namespace BlockDestroyer
         }
 
 
-        private static void DrawBlocks(bool[,] blocksArray)
+        private void DrawBlocks(bool[,] blocksArray)
         {
             Console.CursorTop = 10;
             for (int j = 0; j < blocksArray.GetLength(0); j++)
@@ -76,7 +76,7 @@ namespace BlockDestroyer
         }
 
 
-        private static void DrawGameInfo()
+        private void DrawGameInfo()
         {
             // Draw Score and lives
             for (int i = 0; i < Console.WindowWidth; i++) // Score Divider
