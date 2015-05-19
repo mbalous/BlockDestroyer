@@ -13,11 +13,7 @@ namespace BlockDestroyer
         private int Score { get; set; }
         const string BlockString = "████";
 
-        private void SetBuffer()
-        {
-            Console.BufferHeight = Console.WindowHeight = 40;
-            Console.BufferWidth = Console.WindowWidth = 100;
-        }
+
 
         private struct Board
         {
@@ -35,7 +31,6 @@ namespace BlockDestroyer
 
         public Game()
         {
-            SetBuffer();
             _randomGen = new Random();
         }
 
