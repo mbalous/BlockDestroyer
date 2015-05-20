@@ -2,26 +2,24 @@
 using System.Threading;
 #if DEBUG
 using System.Diagnostics;
+
 #endif
 
 namespace BlockDestroyer
 {
     internal class Game
     {
-        private Random _randomGen;
+        public Random RandomGen { get; }
+        private bool IsRunning { get; set; }
 
         /// <summary>
         ///     Field holding game score
         /// </summary>
         private int Score { get; set; }
 
-        private Board _boardStatus;
+        private Board BoardStatus { get; set; }
+        private bool BoardDirection { get; set; }
 
-        private struct Board
-        {
-            public int Xpos { get; set; }
-            public int Width { get; set; }
-        }
 
         private struct Block
         {
@@ -32,24 +30,25 @@ namespace BlockDestroyer
 
         public Game()
         {
-            _randomGen = new Random();
+            RandomGen = new Random();
         }
 
         public void Start()
         {
             Score = 0;
-            bool[,] blocksArray = new bool[5, 20]; // [rows, columns]
+            var blocksArray = new bool[5, 20]; // [rows, columns]
             ResetBlocksArray(blocksArray);
 
-            _boardStatus = new Board
-            {
-                Width = 4,
-                Xpos = Console.WindowWidth / 2,
-            };
-            
-            Thread inputThread = new Thread(ReadInput);
+            BoardStatus = new Board((sbyte) (Console.WindowWidth/2), 4);
+
+            var inputThread = new Thread(ReadInput);
             inputThread.Start();
 
+            var boardMoverThread = new Thread(BoardMover);
+            boardMoverThread.Start();
+#if DEBUG
+            var tick = 0;
+#endif
             while (true)
             {
                 DrawBlocks(blocksArray);
@@ -57,9 +56,20 @@ namespace BlockDestroyer
                 Thread.Sleep(2000);
                 Console.Clear();
 #if DEBUG
-                var tick = 1;
+                tick++;
                 Debug.WriteLine("Tick no: {0}", tick);
 #endif
+            }
+        }
+
+        private void BoardMover()
+        {
+            while (IsRunning)
+            {
+                if (BoardDirection)
+                    BoardStatus.Xpos++;
+                else
+                    BoardStatus.Xpos--;
             }
         }
 
@@ -76,20 +86,23 @@ namespace BlockDestroyer
                 }
                 if (userInput.Key == ConsoleKey.LeftArrow)
                 {
-                    
+                    BoardDirection = false;
                 }
                 if (userInput.Key == ConsoleKey.RightArrow)
                 {
-                    
+                    BoardDirection = true;
                 }
+#if DEBUG
+                Debug.WriteLine("Pressed key: {0}", userInput.KeyChar);
+#endif
             }
         }
 
         private void ResetBlocksArray(bool[,] blocksArray)
         {
-            for (int i = 0; i < blocksArray.GetLength(0); i++)
+            for (var i = 0; i < blocksArray.GetLength(0); i++)
             {
-                for (int j = 0; j < blocksArray.GetLength(1); j++)
+                for (var j = 0; j < blocksArray.GetLength(1); j++)
                 {
                     blocksArray[i, j] = true;
                 }
@@ -100,9 +113,9 @@ namespace BlockDestroyer
         private void DrawBlocks(bool[,] blocksArray)
         {
             Console.CursorTop = 10;
-            for (int j = 0; j < blocksArray.GetLength(0); j++)
+            for (var j = 0; j < blocksArray.GetLength(0); j++)
             {
-                for (int i = 0; i < blocksArray.GetLength(1); i++)
+                for (var i = 0; i < blocksArray.GetLength(1); i++)
                 {
                     if (blocksArray[j, i])
                         Console.Write("████" + " ");
@@ -119,7 +132,7 @@ namespace BlockDestroyer
         private void DrawGameInfo()
         {
             // Draw Score and lives
-            for (int i = 0; i < Console.WindowWidth; i++) // Score Divider
+            for (var i = 0; i < Console.WindowWidth; i++) // Score Divider
                 Writer.PrintAtPosition(i, 5, '-');
 
             Writer.PrintAtPosition(0, 0, string.Format("Score: {0}", Score), ConsoleColor.DarkRed);
