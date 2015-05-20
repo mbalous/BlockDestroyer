@@ -3,37 +3,34 @@
 namespace BlockDestroyer
 {
     /// <summary>
-    ///     Class using for writing strings or characters to a desired place.
+    ///     Class using for writing strings or characters to line and row given in parameters.
     /// </summary>
-    static class Writer
+    internal static class Writer
     {
-
-        public static void WriteCharAtPosition(int x, int y, char @char, ConsoleColor color)
+        public static void PrintAtPosition(int col, int row, char charToPrint)
         {
-            Console.SetCursorPosition(x, y);
+            PrintAtPosition(col, row, charToPrint, ConsoleColor.White);
+        }
+
+        public static void PrintAtPosition(int col, int row, char charToPrint, ConsoleColor color)
+        {
+            Console.SetCursorPosition(col, row);
             Console.ForegroundColor = color;
-            Console.Write(@char);
+            Console.Write(charToPrint);
             Console.ResetColor();
         }
 
-        public static void WriteCharAtPosition(int x, int y, char @char)
+        public static void PrintAtPosition(int col, int row, string stringToPrint)
         {
-            Console.SetCursorPosition(x, y);
-            Console.Write(@char);
+            PrintAtPosition(col, row, stringToPrint, ConsoleColor.White);
         }
 
-        public static void WriteStringAtPosition(int x, int y, string text, ConsoleColor color)
+        public static void PrintAtPosition(int col, int row, string stringToPrint, ConsoleColor color)
         {
-            Console.SetCursorPosition(x, y);
+            Console.SetCursorPosition(col, row);
             Console.ForegroundColor = color;
-            Console.Write(text);
+            Console.Write(stringToPrint);
             Console.ResetColor();
-        }
-
-        public static void WriteStringAtPosition(int x, int y, string text)
-        {
-            Console.SetCursorPosition(x, y);
-            Console.Write(text);
         }
     }
 }
