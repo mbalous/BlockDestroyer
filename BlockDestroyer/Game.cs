@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 
 namespace BlockDestroyer
@@ -11,9 +10,7 @@ namespace BlockDestroyer
         ///     Field holding game score
         /// </summary>
         private int Score { get; set; }
-        const string BlockString = "████";
-
-
+        
 
         private struct Board
         {
@@ -42,7 +39,7 @@ namespace BlockDestroyer
             {
                 DrawBlocks(blocksArray);
                 DrawGameInfo();
-                Thread.Sleep(200);
+                Thread.Sleep(2000);
                 Console.Clear();
             }
         }
@@ -67,7 +64,7 @@ namespace BlockDestroyer
                 for (int i = 0; i < blocksArray.GetLength(1); i++)
                 {
                     if (blocksArray[j, i])
-                        Console.Write(BlockString + " ");
+                        Console.Write("████" + " ");
                     else
                         Console.CursorLeft += 5;
                 }
@@ -75,7 +72,9 @@ namespace BlockDestroyer
             }
         }
 
-
+        /// <summary>
+        ///     Function used for displaying score, etc...
+        /// </summary>
         private void DrawGameInfo()
         {
             // Draw Score and lives

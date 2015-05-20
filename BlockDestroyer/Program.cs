@@ -7,10 +7,10 @@ namespace BlockDestroyer
         static void Main(string[] args)
         {
             Initialize();
-            
+            /*
             Menu mainMenu = new Menu();
             mainMenu.Display();
-            
+            */
             Game game = new Game();
             game.Start();
         }

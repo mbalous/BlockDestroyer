@@ -9,6 +9,9 @@ namespace BlockDestroyer
             DisplayGraphics();
         }
 
+        /// <summary>
+        ///     Function writing graphics stuff on screen.
+        /// </summary>
         private static void DisplayGraphics()
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
