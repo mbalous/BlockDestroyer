@@ -24,7 +24,7 @@ namespace BlockDestroyer
         private int Score { get; set; }
 
         private Board BoardStatus { get; set; }
-        private bool BoardDirection { get; set; }
+        //private bool BoardDirection { get; set; }
 
         private readonly bool[,] _blocksArray;
 
@@ -33,7 +33,7 @@ namespace BlockDestroyer
             Score = 0;
             ResetBlocksArray(_blocksArray);
 
-            BoardStatus = new Board((sbyte) (Console.WindowWidth/2), 4);
+            BoardStatus = new Board((sbyte) (Console.WindowWidth/2), 4, RandomGen.Next(0,1) == 0);
 
             Thread inputThread = new Thread(ReadInput);
             inputThread.Start();
@@ -45,10 +45,10 @@ namespace BlockDestroyer
 #endif
             while (true)
             {
+                Console.Clear();
                 DrawBlocks(_blocksArray);
                 DrawGameInfo();
-                Thread.Sleep(2000);
-                Console.Clear();
+                Thread.Sleep(200);
 #if DEBUG
                 tick++;
                 Debug.WriteLine("Tick no: {0}", tick);
@@ -61,16 +61,16 @@ namespace BlockDestroyer
             while (IsRunning)
             {
                 if (BoardDirection)
-                    BoardStatus.Xpos++;
+                    BoardStatus.XPos++;
                 else
-                    BoardStatus.Xpos--;
+                    BoardStatus.XPos--;
             }
         }
 
         private void ReadInput()
         {
             //moving the dwarf
-            if (Console.KeyAvailable)
+            while (true)
             {
                 ConsoleKeyInfo userInput = Console.ReadKey();
                 // In order to avoid the moving bug (If numerous keys are pressed, the program will execute each one)
@@ -87,7 +87,7 @@ namespace BlockDestroyer
                     BoardDirection = true;
                 }
 #if DEBUG
-                Debug.WriteLine("Pressed key: {0}", userInput.KeyChar);
+                Debug.WriteLine("Pressed key: {0}", userInput.Key);
 #endif
             }
         }

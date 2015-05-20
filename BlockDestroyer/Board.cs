@@ -6,15 +6,17 @@ using System.Threading.Tasks;
 
 namespace BlockDestroyer
 {
-    class Board
+    internal class Board
     {
-        public Board(sbyte xpos, byte width)
+        public Board(sbyte xPos, byte width, bool direction)
         {
-            Xpos = xpos;
+            XPos = xPos;
             Width = width;
+            Direction = direction;
         }
 
-        public sbyte Xpos { get; set; }
+        public sbyte XPos { get; set; }
         public byte Width { get; set; }
+        public bool Direction { get; set; }
     }
 }
