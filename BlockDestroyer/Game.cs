@@ -1,21 +1,25 @@
 ﻿using System;
 using System.Threading;
+#if DEBUG
+using System.Diagnostics;
+#endif
 
 namespace BlockDestroyer
 {
-    class Game
+    internal class Game
     {
         private Random _randomGen;
+
         /// <summary>
         ///     Field holding game score
         /// </summary>
         private int Score { get; set; }
-        
+
+        private Board _boardStatus;
 
         private struct Board
         {
-            public int X { get; set; }
-            public int Y { get; set; }
+            public int Xpos { get; set; }
             public int Width { get; set; }
         }
 
@@ -33,18 +37,55 @@ namespace BlockDestroyer
 
         public void Start()
         {
+            Score = 0;
             bool[,] blocksArray = new bool[5, 20]; // [rows, columns]
-            FillBlocksArray(blocksArray);
+            ResetBlocksArray(blocksArray);
+
+            _boardStatus = new Board
+            {
+                Width = 4,
+                Xpos = Console.WindowWidth / 2,
+            };
+            
+            Thread inputThread = new Thread(ReadInput);
+            inputThread.Start();
+
             while (true)
             {
                 DrawBlocks(blocksArray);
                 DrawGameInfo();
                 Thread.Sleep(2000);
                 Console.Clear();
+#if DEBUG
+                var tick = 1;
+                Debug.WriteLine("Tick no: {0}", tick);
+#endif
             }
         }
 
-        private void FillBlocksArray(bool[,] blocksArray)
+        private void ReadInput()
+        {
+            //moving the dwarf
+            if (Console.KeyAvailable)
+            {
+                ConsoleKeyInfo userInput = Console.ReadKey();
+                // In order to avoid the moving bug (If numerous keys are pressed, the program will execute each one)
+                while (Console.KeyAvailable)
+                {
+                    Console.ReadKey(true);
+                }
+                if (userInput.Key == ConsoleKey.LeftArrow)
+                {
+                    
+                }
+                if (userInput.Key == ConsoleKey.RightArrow)
+                {
+                    
+                }
+            }
+        }
+
+        private void ResetBlocksArray(bool[,] blocksArray)
         {
             for (int i = 0; i < blocksArray.GetLength(0); i++)
             {

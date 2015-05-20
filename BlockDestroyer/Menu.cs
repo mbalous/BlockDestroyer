@@ -29,7 +29,7 @@ namespace BlockDestroyer
                 Console.WriteLine(row);
 
             for (int i = 0; i < Console.WindowWidth; i++) // Divider
-                Writer.WriteCharAtPosition(i, 10, '-');
+                Writer.PrintAtPosition(i, 10, '-');
         }
 
     }
