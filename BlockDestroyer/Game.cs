@@ -23,7 +23,7 @@ namespace BlockDestroyer
         /// </summary>
         private int Score { get; set; }
 
-        private Board BoardStatus { get; set; }
+        private Board BoardF { get; set; }
         //private bool BoardDirection { get; set; }
 
         private readonly bool[,] _blocksArray;
@@ -33,7 +33,7 @@ namespace BlockDestroyer
             Score = 0;
             ResetBlocksArray(_blocksArray);
 
-            BoardStatus = new Board((sbyte) (Console.WindowWidth/2), 4, RandomGen.Next(0,1) == 0);
+            BoardF = new Board((sbyte) (Console.WindowWidth/2), 4, RandomGen.Next(0,1) == 0);
 
             Thread inputThread = new Thread(ReadInput);
             inputThread.Start();
@@ -60,10 +60,10 @@ namespace BlockDestroyer
         {
             while (IsRunning)
             {
-                if (BoardDirection)
-                    BoardStatus.XPos++;
+                if (BoardF.Direction)
+                    BoardF.XPos++;
                 else
-                    BoardStatus.XPos--;
+                    BoardF.XPos--;
             }
         }
 
@@ -80,11 +80,11 @@ namespace BlockDestroyer
                 }
                 if (userInput.Key == ConsoleKey.LeftArrow)
                 {
-                    BoardDirection = false;
+                    BoardF.Direction = false;
                 }
                 if (userInput.Key == ConsoleKey.RightArrow)
                 {
-                    BoardDirection = true;
+                    BoardF.Direction = true;
                 }
 #if DEBUG
                 Debug.WriteLine("Pressed key: {0}", userInput.Key);
