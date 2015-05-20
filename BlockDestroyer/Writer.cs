@@ -7,12 +7,7 @@ namespace BlockDestroyer
     /// </summary>
     internal static class Writer
     {
-        public static void PrintAtPosition(int col, int row, char charToPrint)
-        {
-            PrintAtPosition(col, row, charToPrint, ConsoleColor.White);
-        }
-
-        public static void PrintAtPosition(int col, int row, char charToPrint, ConsoleColor color)
+        public static void PrintAtPosition(int col, int row, char charToPrint, ConsoleColor color = ConsoleColor.White)
         {
             Console.SetCursorPosition(col, row);
             Console.ForegroundColor = color;
@@ -20,12 +15,7 @@ namespace BlockDestroyer
             Console.ResetColor();
         }
 
-        public static void PrintAtPosition(int col, int row, string stringToPrint)
-        {
-            PrintAtPosition(col, row, stringToPrint, ConsoleColor.White);
-        }
-
-        public static void PrintAtPosition(int col, int row, string stringToPrint, ConsoleColor color)
+        public static void PrintAtPosition(int col, int row, string stringToPrint, ConsoleColor color = ConsoleColor.White)
         {
             Console.SetCursorPosition(col, row);
             Console.ForegroundColor = color;

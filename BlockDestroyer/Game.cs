@@ -9,7 +9,13 @@ namespace BlockDestroyer
 {
     internal class Game
     {
-        public Random RandomGen { get; }
+        public Game()
+        {
+            RandomGen = new Random();
+            _blocksArray = new bool[5, 20]; // [rows, columns]
+        }
+
+        private Random RandomGen { get; set; }
         private bool IsRunning { get; set; }
 
         /// <summary>
@@ -20,38 +26,26 @@ namespace BlockDestroyer
         private Board BoardStatus { get; set; }
         private bool BoardDirection { get; set; }
 
-
-        private struct Block
-        {
-            public int X { get; set; }
-            public int Y { get; set; }
-            public bool Exists { get; set; }
-        }
-
-        public Game()
-        {
-            RandomGen = new Random();
-        }
+        private readonly bool[,] _blocksArray;
 
         public void Start()
         {
             Score = 0;
-            var blocksArray = new bool[5, 20]; // [rows, columns]
-            ResetBlocksArray(blocksArray);
+            ResetBlocksArray(_blocksArray);
 
             BoardStatus = new Board((sbyte) (Console.WindowWidth/2), 4);
 
-            var inputThread = new Thread(ReadInput);
+            Thread inputThread = new Thread(ReadInput);
             inputThread.Start();
 
-            var boardMoverThread = new Thread(BoardMover);
+            Thread boardMoverThread = new Thread(BoardMover);
             boardMoverThread.Start();
 #if DEBUG
-            var tick = 0;
+            int tick = 0;
 #endif
             while (true)
             {
-                DrawBlocks(blocksArray);
+                DrawBlocks(_blocksArray);
                 DrawGameInfo();
                 Thread.Sleep(2000);
                 Console.Clear();
@@ -100,22 +94,21 @@ namespace BlockDestroyer
 
         private void ResetBlocksArray(bool[,] blocksArray)
         {
-            for (var i = 0; i < blocksArray.GetLength(0); i++)
+            for (int i = 0; i < blocksArray.GetLength(0); i++)
             {
-                for (var j = 0; j < blocksArray.GetLength(1); j++)
+                for (int j = 0; j < blocksArray.GetLength(1); j++)
                 {
                     blocksArray[i, j] = true;
                 }
             }
         }
 
-
         private void DrawBlocks(bool[,] blocksArray)
         {
             Console.CursorTop = 10;
-            for (var j = 0; j < blocksArray.GetLength(0); j++)
+            for (int j = 0; j < blocksArray.GetLength(0); j++)
             {
-                for (var i = 0; i < blocksArray.GetLength(1); i++)
+                for (int i = 0; i < blocksArray.GetLength(1); i++)
                 {
                     if (blocksArray[j, i])
                         Console.Write("████" + " ");
@@ -132,10 +125,17 @@ namespace BlockDestroyer
         private void DrawGameInfo()
         {
             // Draw Score and lives
-            for (var i = 0; i < Console.WindowWidth; i++) // Score Divider
+            for (int i = 0; i < Console.WindowWidth; i++) // Score Divider
                 Writer.PrintAtPosition(i, 5, '-');
 
             Writer.PrintAtPosition(0, 0, string.Format("Score: {0}", Score), ConsoleColor.DarkRed);
+        }
+
+        private struct Block
+        {
+            public int X { get; set; }
+            public int Y { get; set; }
+            public bool Exists { get; set; }
         }
     }
 }
