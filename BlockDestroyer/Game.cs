@@ -28,7 +28,7 @@ namespace BlockDestroyer
             ResetBlocks(_blocksArray);
             CreateBoard();
 
-            Thread inputThread = new Thread(ReadInput) {Name = "inputThread"};
+            Thread inputThread = new Thread(ReadInput) { Name = "inputThread" };
             inputThread.Start();
 
             /*
@@ -68,20 +68,20 @@ namespace BlockDestroyer
         private void MoveBoard()
         {
             int leftEnd = 0;
-            int rightEnd = Console.BufferWidth;
+            int rightEnd = Console.BufferWidth - Board.Width;
 
             //while (IsRunning)
             //{
-                //Changing board direction if were on the end
-                if (Board.XPos == leftEnd) 
-                    Board.Direction = true;
-                else if (Board.XPos == rightEnd)
-                    Board.Direction = false;
+            //Changing board direction if were on the end
+            if (Board.XPos <= leftEnd)
+                Board.Direction = true;
+            else if (Board.XPos >= rightEnd)
+                Board.Direction = false;
 
-                if (Board.Direction)
-                    Board.XPos += 2;
-                else
-                    Board.XPos -= 2;
+            if (Board.Direction)
+                Board.XPos += 2;
+            else
+                Board.XPos -= 2;
             //}
         }
 
