@@ -16,7 +16,7 @@ namespace BlockDestroyer
         }
 
         public sbyte XPos { get; set; }
-        public byte Width { get; set; }
+        public byte Width { get; private set; }
         public bool Direction { get; set; }
     }
 }

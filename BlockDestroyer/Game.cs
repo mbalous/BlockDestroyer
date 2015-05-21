@@ -143,7 +143,7 @@ namespace BlockDestroyer
             for (int i = 0; i < Console.WindowWidth; i++) // Score Divider
                 Writer.PrintAtPosition(i, 5, '-');
 
-            Writer.PrintAtPosition(0, 0, string.Format("Score: {0}", Score), ConsoleColor.DarkRed);
+            Writer.PrintAtPosition(0, 0, $"Score: {Score}", ConsoleColor.DarkRed);
         }
     }
 }
