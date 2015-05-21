@@ -2,7 +2,6 @@
 using System.Threading;
 #if DEBUG
 using System.Diagnostics;
-
 #endif
 
 namespace BlockDestroyer
@@ -17,54 +16,73 @@ namespace BlockDestroyer
 
         private Random RandomGen { get; set; }
         private bool IsRunning { get; set; }
-
-        /// <summary>
-        ///     Field holding game score
-        /// </summary>
         private int Score { get; set; }
-
-        private Board BoardF { get; set; }
-        //private bool BoardDirection { get; set; }
-
-        private readonly bool[,] _blocksArray;
+        private Board Board { get; set; }
+        private bool[,] _blocksArray;
 
         public void Start()
         {
+            IsRunning = true;
             Score = 0;
-            ResetBlocksArray(_blocksArray);
 
-            BoardF = new Board((sbyte) (Console.WindowWidth/2), 4, RandomGen.Next(0,1) == 0);
+            ResetBlocks(_blocksArray);
+            CreateBoard();
 
-            Thread inputThread = new Thread(ReadInput);
+            Thread inputThread = new Thread(ReadInput) {Name = "inputThread"};
             inputThread.Start();
 
-            Thread boardMoverThread = new Thread(BoardMover);
-            boardMoverThread.Start();
-#if DEBUG
-            int tick = 0;
-#endif
+            /*
+            Thread boardMoveThread = new Thread(MoveBoard) {Name = "boardMoveThread"};
+            boardMoveThread.Start();
+            */
             while (true)
             {
                 Console.Clear();
-                DrawBlocks(_blocksArray);
-                DrawGameInfo();
-                Thread.Sleep(200);
-#if DEBUG
-                tick++;
-                Debug.WriteLine("Tick no: {0}", tick);
-#endif
+                Draw();
+                MoveBoard();
+                Thread.Sleep(40);
             }
         }
 
-        private void BoardMover()
+        private void Draw()
         {
-            while (IsRunning)
+            DrawBlocks();
+            DrawBoard();
+            DrawGameInfo();
+        }
+
+        private void DrawBoard()
+        {
+            Console.SetCursorPosition(Board.XPos, Console.BufferHeight - 1);
+            for (int i = 0; i < Board.Width; i++)
             {
-                if (BoardF.Direction)
-                    BoardF.XPos++;
-                else
-                    BoardF.XPos--;
+                Console.Write('-');
             }
+        }
+
+        private void CreateBoard()
+        {
+            Board = new Board(xPos: (sbyte)(Console.WindowWidth / 2), width: 8, direction: RandomGen.Next(0, 1) == 0);
+        }
+
+        private void MoveBoard()
+        {
+            int leftEnd = 0;
+            int rightEnd = Console.BufferWidth;
+
+            //while (IsRunning)
+            //{
+                //Changing board direction if were on the end
+                if (Board.XPos == leftEnd) 
+                    Board.Direction = true;
+                else if (Board.XPos == rightEnd)
+                    Board.Direction = false;
+
+                if (Board.Direction)
+                    Board.XPos += 2;
+                else
+                    Board.XPos -= 2;
+            //}
         }
 
         private void ReadInput()
@@ -80,19 +98,16 @@ namespace BlockDestroyer
                 }
                 if (userInput.Key == ConsoleKey.LeftArrow)
                 {
-                    BoardF.Direction = false;
+                    Board.Direction = false;
                 }
                 if (userInput.Key == ConsoleKey.RightArrow)
                 {
-                    BoardF.Direction = true;
+                    Board.Direction = true;
                 }
-#if DEBUG
-                Debug.WriteLine("Pressed key: {0}", userInput.Key);
-#endif
             }
         }
 
-        private void ResetBlocksArray(bool[,] blocksArray)
+        private void ResetBlocks(bool[,] blocksArray)
         {
             for (int i = 0; i < blocksArray.GetLength(0); i++)
             {
@@ -103,15 +118,15 @@ namespace BlockDestroyer
             }
         }
 
-        private void DrawBlocks(bool[,] blocksArray)
+        private void DrawBlocks()
         {
             Console.CursorTop = 10;
-            for (int j = 0; j < blocksArray.GetLength(0); j++)
+            for (int j = 0; j < _blocksArray.GetLength(0); j++)
             {
-                for (int i = 0; i < blocksArray.GetLength(1); i++)
+                for (int i = 0; i < _blocksArray.GetLength(1); i++)
                 {
-                    if (blocksArray[j, i])
-                        Console.Write("████" + " ");
+                    if (_blocksArray[j, i])
+                        Console.Write("████ ");
                     else
                         Console.CursorLeft += 5;
                 }
@@ -129,13 +144,6 @@ namespace BlockDestroyer
                 Writer.PrintAtPosition(i, 5, '-');
 
             Writer.PrintAtPosition(0, 0, string.Format("Score: {0}", Score), ConsoleColor.DarkRed);
-        }
-
-        private struct Block
-        {
-            public int X { get; set; }
-            public int Y { get; set; }
-            public bool Exists { get; set; }
         }
     }
 }
