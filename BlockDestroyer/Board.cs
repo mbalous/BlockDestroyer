@@ -1,22 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BlockDestroyer
 {
-    internal class Board
+    internal class Board : GameObject
     {
-        public Board(sbyte xPos, byte width, bool direction)
+        public Board(int xPosition, int yPosition, byte width, bool direction, ConsoleColor color = ConsoleColor.White) : base(xPosition, yPosition, color)
         {
-            XPos = xPos;
             Width = width;
             Direction = direction;
         }
 
-        public sbyte XPos { get; set; }
-        public byte Width { get; private set; }
-        public bool Direction { get; set; }
+        /// <summary>
+        ///     Width of the board
+        /// </summary>
+        byte Width { get; set; }
+
+        /// <summary>
+        ///     Direction of the board
+        ///     true = moving right
+        ///     false = moving left
+        /// </summary>
+        bool Direction { get; set; }
     }
 }

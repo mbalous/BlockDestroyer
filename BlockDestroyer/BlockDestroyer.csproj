@@ -62,8 +62,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Board.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="GameObject.cs" />
+    <Compile Include="Ball.cs" />
+    <Compile Include="Block.cs" />
+    <Compile Include="Board.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
