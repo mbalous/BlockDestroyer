@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Threading;
-#if DEBUG
 using System.Diagnostics;
-#endif
+
+// ReSharper disable RedundantArgumentName
+// ReSharper disable RedundantArgumentNameForLiteralExpression
 
 namespace BlockDestroyer
 {
@@ -11,7 +12,7 @@ namespace BlockDestroyer
         public Game()
         {
             _random = new Random();
-            _blocksArray = new bool[5, 20]; // [rows, columns]
+            //_blocksArray = new bool[5, 20]; // [rows, columns]
             _blocks = new Block[20 , 5];
         }
 
@@ -19,16 +20,16 @@ namespace BlockDestroyer
         private bool _isRunning;
         private int _score;
         private Board _board;
-        private bool[,] _blocksArray;
+        //private bool[,] _blocksArray;
         private Block[,] _blocks;
 
         public void Start()
         {
             _isRunning = true;
             _score = 0;
-            InitializeBlocks();
-            ResetBlocks(_blocksArray);
-            CreateBoard();
+            //InitializeBlocks();
+            //ResetBlocks(_blocksArray);
+            InitializeBoard();
 
             Thread inputThread = new Thread(ReadInput) { Name = "inputThread" };
             inputThread.Start();
@@ -62,51 +63,69 @@ namespace BlockDestroyer
             {
                 for (int x = 1; x <= _blocks.GetLength(1) * 5; x += 5)
                 {
-                    _blocks[y - 1, x - 1] = new Block();
-                    _blocks[y - 1, x - 1].XPos = x;
-                    _blocks[y - 1, x - 1].YPos = y;
+                    //_blocks[y - 1, x - 1] = new Block();
+                    //_blocks[y - 1, x - 1].XPos = x;
+                    //_blocks[y - 1, x - 1].YPos = y;
                 }
             }
         }
 
         private void Draw()
         {
-            DrawGameInfo(); // draws divider and score
-            DrawBlocks(); // draws blocks
+            //DrawGameInfo(); // draws divider and score
+            //DrawBlocks(); // draws blocks
             DrawBoard(); // draws board according to its position
         }
 
         private void DrawBoard()
         {
             // Bug: when board is on the right end, screen shifts
-            Console.SetCursorPosition(_board.XPos, Console.BufferHeight - 1);
+            Console.SetCursorPosition(_board.XPosition, Console.BufferHeight - 1);
             for (int i = 0; i < _board.Width; i++)
                 Console.Write('#');
         }
 
-        private void CreateBoard()
+        private void InitializeBoard()
         {
             // Creating the board, xPosition is set to center screen, direction is randomized
+            //_board = new Board(
+            //    xPosition: (sbyte)(Console.WindowWidth / 2),
+            //    width: 8,
+            //    direction: _random.Next(0, 1) == 0);}
             _board = new Board(
-                xPosition: (sbyte)(Console.WindowWidth / 2),
+                xPosition: Console.WindowWidth / 2,
+                yPosition: Console.BufferHeight - 1,
                 width: 8,
-                direction: _random.Next(0, 1) == 0);
+                direction: _random.Next(0, 1) == 0,
+                exists: true,
+                color: ConsoleColor.Yellow);
         }
 
         private void MoveBoard()
         {
             int leftEnd = 0;
             int rightEnd = Console.BufferWidth - _board.Width - 2;
+            
+            CleanPosition(_board.XPosition, _board.YPosition, _board.Width);
 
-            if (_board.XPos <= leftEnd) //Changing board direction if were on the end
+            if (_board.XPosition <= leftEnd) //Changing board direction if were on the end
                 _board.Direction = true;
-            else if (_board.XPos >= rightEnd)
+            else if (_board.XPosition >= rightEnd)
                 _board.Direction = false;
 
             if (_board.Direction)
-                _board.XPos += 1;
+                _board.XPosition += 1;
             else
-                _board.XPos -= 1;
+                _board.XPosition -= 1;
+        }
+
+        private void CleanPosition(int xPosition, int yPosition, int lenght)
+        {
+            Console.SetCursorPosition(xPosition, yPosition);
+            for (int i = 0; i < lenght; i++)
+            {
+                Console.Write(' ');
+            }
         }
 
         private void ReadInput()
@@ -142,6 +161,7 @@ namespace BlockDestroyer
             }
         }
 
+/*
         private void DrawBlocks()
         {
             Console.SetCursorPosition(0, 0);
@@ -158,6 +178,7 @@ namespace BlockDestroyer
                 Console.CursorTop += 1;
             }
         }
+*/
 
         /// <summary>
         ///     Function used for displaying score, etc...
