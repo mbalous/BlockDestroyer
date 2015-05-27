@@ -6,84 +6,76 @@ namespace BlockDestroyer
 {
     internal class Menu
     {
-        private bool Choosed { get; set; }
+        private bool DidChoose { get; set; }
         private int _option;
-
-        private int Option
-        {
-            get { return _option; }
-            set
-            {
-                switch (Option)
-                {
-                    case 0:
-                        _option = 1;
-                        break;
-                    case 5:
-                        _option = 4;
-                        break;
-                    default:
-                        _option = value;
-                        break;
-                }
-            }
-        }
 
         public void Run()
         {
             /* First option is selected */
-            Option = 1; 
+            _option = 0;
 
             Console.Clear();
             DisplayGraphics();
 
-            Thread readInput = new Thread(KeyReader);
+            Thread readInput = new Thread(KeyReader) { Name = "readInputThread" };
             readInput.Start();
-            
-            Thread printMenu = new Thread(PrintMenu);
-            printMenu.Start();            
+
+            MenuPrinter();
         }
 
-        private void PrintMenu()
+        private void MenuPrinter()
         {
             Dictionary<int, string> menuItems = new Dictionary<int, string>
             {
-                {1, "Play Game"},
-                {2, "High scores"},
-                {3, "About"},
-                {4, "Exit"}
+                {0, "Play Game"},
+                {1, "High scores"},
+                {2, "About"},
+                {3, "Exit"}
             };
 
             while (true)
             {
-                Console.SetCursorPosition(0, 20);
-
-                for (int i = 1; i <= menuItems.Count; i++)
+                lock (this)
                 {
-                    if (i == Option)
+                    if (DidChoose)
+                        return;
+
+                    Console.SetCursorPosition(0, 20);
+
+                    for (int i = 0; i < menuItems.Count; i++)
                     {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine(menuItems[i]);
-                        Console.ResetColor();
-                    }
-                    else
-                    {
-                        Console.WriteLine(menuItems[i]);
+                        if (i == _option)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.WriteLine(menuItems[i]);
+                            Console.ResetColor();
+                        }
+                        else
+                        {
+                            Console.WriteLine(menuItems[i]);
+                        }
                     }
                 }
-
                 Thread.Sleep(50);
             }
         }
 
+        private void NextOption()
+        {
+            if (_option < 3)
+                _option++;
+        }
+
+        private void PrevOption()
+        {
+            if (_option > 0)
+                _option--;
+        }
 
         private void KeyReader()
         {
             while (true)
             {
-                if (Choosed)
-                    break;
-
                 ConsoleKey pressedKey = Console.ReadKey().Key;
                 /* In order to detect numerous keys pressed at once */
                 while (Console.KeyAvailable)
@@ -92,15 +84,38 @@ namespace BlockDestroyer
                 switch (pressedKey)
                 {
                     case ConsoleKey.UpArrow:
-                        Option--;
+                        PrevOption();
                         break;
                     case ConsoleKey.DownArrow:
-                        Option++;
+                        NextOption();
                         break;
                     case ConsoleKey.Enter:
-                        Choosed = true;
-                        break;
+                        Console.Clear();
+                        DidChoose = true;
+                        OptionSelected();
+                        return;
                 }
+            }
+        }
+
+        private void OptionSelected()
+        {
+            switch (_option)
+            {
+                case 0:
+                    Console.Clear();
+                    break;
+                case 1:
+                    /* TODO: Implement high scores */
+                    Environment.Exit(_option);
+                    break;
+                case 2:
+                    /* TODO: Implement about */
+                    Environment.Exit(_option);
+                    break;
+                case 3:
+                    Environment.Exit(_option);
+                    break;
             }
         }
 

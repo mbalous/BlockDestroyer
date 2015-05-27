@@ -45,13 +45,14 @@ namespace BlockDestroyer
         {
             while (true)
             {
-                DrawGameInfo();
+                PrintScore();
                 MoveBoard();
                 Draw();
                 Thread.Sleep(90);
             }
         }
 
+/*
         private void InitializeBlocks()
         {
             for (int x = 0; x < BlocksArray.GetLength(0); x++)
@@ -62,10 +63,11 @@ namespace BlockDestroyer
                 }
             }            
         }
+*/
 
         private void Draw()
         {
-            //DrawGameInfo(); // draws divider and score
+            PrintScore(); // draws divider and score
             //DrawBlocks(); // draws blocks
             DrawBoard(); // draws board according to its position
         }
@@ -161,7 +163,7 @@ namespace BlockDestroyer
         /// <summary>
         ///     Function prints score above the score divider.
         /// </summary>
-        private void DrawGameInfo()
+        private void PrintScore()
         {
             /* 
              * Draw score and lives

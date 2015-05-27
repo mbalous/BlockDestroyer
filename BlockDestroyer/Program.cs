@@ -11,8 +11,8 @@ namespace BlockDestroyer
             Menu mainMenu = new Menu();
             mainMenu.Run();
             
-            //Game game = new Game();
-            //game.Start();
+            Game game = new Game();
+            game.Start();
         }
 
         private static void Initialize()
@@ -21,9 +21,7 @@ namespace BlockDestroyer
             Console.CursorVisible = false;
 
             Console.BufferHeight = Console.WindowHeight = 40;
-            Console.BufferWidth = Console.WindowWidth = 100;
-
-            Console.WindowHeight += 1;
+            Console.BufferWidth = Console.WindowWidth = 100;            
         }
     }
 }
