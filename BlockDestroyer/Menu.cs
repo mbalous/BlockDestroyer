@@ -6,6 +6,7 @@ namespace BlockDestroyer
     {
         public void Display()
         {
+            Console.Clear();
             DisplayGraphics();
         }
 
@@ -30,6 +31,8 @@ namespace BlockDestroyer
 
             for (int i = 0; i < Console.WindowWidth; i++) // Divider
                 Writer.PrintAtPosition(i, 10, '-');
+
+            Console.ResetColor();
         }
 
     }

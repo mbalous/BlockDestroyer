@@ -1,5 +1,10 @@
 ﻿using System;
 
+/*
+ * Columns stands for X axis
+ * Rows stands for Y axis
+ */
+
 namespace BlockDestroyer
 {
     /// <summary>
@@ -21,6 +26,15 @@ namespace BlockDestroyer
             Console.ForegroundColor = color;
             Console.Write(stringToPrint);
             Console.ResetColor();
+        }
+
+        public static void ClearPosition(int col, int row, int chars = 1)
+        {
+            Console.SetCursorPosition(col, row);
+            if (chars > 0)
+                return;
+            for (int i = 0; i < chars; i++)
+                Console.Write(' ');
         }
     }
 }

@@ -4,7 +4,7 @@ namespace BlockDestroyer
 {
     static class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             Initialize();
             /*

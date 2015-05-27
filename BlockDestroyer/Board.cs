@@ -4,7 +4,8 @@ namespace BlockDestroyer
 {
     internal class Board : GameObject
     {
-        public Board(int xPosition, int yPosition, byte width, bool direction, bool exists = true, ConsoleColor color = ConsoleColor.White) : base(xPosition, yPosition, exists)
+        public Board(int xPosition, int yPosition, byte width, bool direction, bool exists = true, ConsoleColor color = ConsoleColor.White)
+            : base(xPosition, yPosition, exists)
         {
             Width = width;
             Direction = direction;
