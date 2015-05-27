@@ -31,7 +31,7 @@ namespace BlockDestroyer
         public static void ClearPosition(int col, int row, int chars = 1)
         {
             Console.SetCursorPosition(col, row);
-            if (chars > 0)
+            if (chars <= 0)
                 return;
             for (int i = 0; i < chars; i++)
                 Console.Write(' ');

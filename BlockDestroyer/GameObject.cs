@@ -9,6 +9,13 @@ namespace BlockDestroyer
         bool Exists { get; set; }
         ConsoleColor Color { get; set; }
 
+        /// <summary>
+        ///     Generic constuctor.
+        /// </summary>
+        /// <param name="xPosition"></param>
+        /// <param name="yPosition"></param>
+        /// <param name="exists"></param>
+        /// <param name="color"></param>
         protected GameObject(int xPosition, int yPosition, bool exists, ConsoleColor color = ConsoleColor.White)
         {
             XPosition = xPosition;

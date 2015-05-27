@@ -34,7 +34,6 @@ namespace BlockDestroyer
             DrawScoreDivider();
             ResetBlocks();
             
-
             Thread inputThread = new Thread(ReadInput) {Name = "inputThread"};
             inputThread.Start();
 
@@ -47,7 +46,9 @@ namespace BlockDestroyer
             {
                 PrintScore();
                 MoveBoard();
-                Draw();
+                DrawBoard(); // draws board according to its position
+                PrintScore(); // draws divider and score
+                DrawBlocks(); // draws blocks
                 Thread.Sleep(90);
             }
         }
@@ -64,20 +65,12 @@ namespace BlockDestroyer
             }            
         }
 */
-
-        private void Draw()
-        {
-            PrintScore(); // draws divider and score
-            //DrawBlocks(); // draws blocks
-            DrawBoard(); // draws board according to its position
-        }
-
         private void DrawBoard()
         {
             // Bug: when board is on the right end, screen shifts
             Console.SetCursorPosition(BoardObject.XPosition, Console.BufferHeight - 1);
             for (int i = 0; i < BoardObject.Width; i++)
-                Console.Write('#');
+                Console.Write(BoardObject.BoardChar);
         }
 
         private void InitializeBoard()
@@ -114,16 +107,20 @@ namespace BlockDestroyer
             /* Moving the board */
             while (true)
             {
-                ConsoleKey pressedKey = Console.ReadKey().Key;
-                /* In order to detect numerous keys pressed at once */
-                while (Console.KeyAvailable)
-                    Console.ReadKey(true);
+                lock (this)
+                {
 
-                if (pressedKey == ConsoleKey.LeftArrow)
-                    BoardObject.Direction = false;
+                    ConsoleKey pressedKey = Console.ReadKey().Key;
+                    /* In order to detect numerous keys pressed at once */
+                    while (Console.KeyAvailable)
+                        Console.ReadKey(true);
 
-                if (pressedKey == ConsoleKey.RightArrow)
-                    BoardObject.Direction = true;
+                    if (pressedKey == ConsoleKey.LeftArrow)
+                        BoardObject.Direction = false;
+
+                    if (pressedKey == ConsoleKey.RightArrow)
+                        BoardObject.Direction = true;
+                }
             }
         }
 
