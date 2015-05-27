@@ -52,7 +52,6 @@ namespace BlockDestroyer
             }
         }
 
-
         private void InitializeBlocks()
         {
             for (int x = 0; x < BlocksArray.GetLength(0); x++)
@@ -126,6 +125,7 @@ namespace BlockDestroyer
             }
         }
 
+
         /// <summary>
         ///     Function resets all blocks. (Recreates them)
         /// </summary>
@@ -169,6 +169,7 @@ namespace BlockDestroyer
              */
             Writer.PrintAtPosition(0, 0, string.Format("Score: {0}", Score), ConsoleColor.DarkRed);
         }
+
 
         /// <summary>
         ///     Function prints score divider.
