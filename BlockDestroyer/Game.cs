@@ -53,18 +53,6 @@ namespace BlockDestroyer
             }
         }
 
-/*
-        private void InitializeBlocks()
-        {
-            for (int x = 0; x < BlocksArray.GetLength(0); x++)
-            {
-                for (int y = 0; y < BlocksArray.GetLength(1); y++)
-                {
-
-                }
-            }            
-        }
-*/
         private void DrawBoard()
         {
             // Bug: when board is on the right end, screen shifts
