@@ -7,12 +7,12 @@ namespace BlockDestroyer
         static void Main()
         {
             Initialize();
-            /*
+            
             Menu mainMenu = new Menu();
-            mainMenu.Display();
-            */
-            Game game = new Game();
-            game.Start();
+            mainMenu.Run();
+            
+            //Game game = new Game();
+            //game.Start();
         }
 
         private static void Initialize()

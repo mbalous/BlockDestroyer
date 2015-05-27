@@ -1,13 +1,68 @@
 ﻿using System;
+using System.Threading;
 
 namespace BlockDestroyer
 {
     internal class Menu
     {
-        public void Display()
+        private int _option;
+
+        public void Run()
         {
             Console.Clear();
+
+            Thread readInput = new Thread(KeyReader);
+            readInput.Start();
+
+            Option = 1;
+
             DisplayGraphics();
+        }
+
+        private int Option
+        {
+            get
+            {
+                return _option;
+            }
+            set
+            {
+                switch (Option)
+                {
+                    case 0:
+                        Option = 1;
+                        break;
+                    case 5:
+                        Option = 4;
+                        break;
+                    default:
+                        _option = value;
+                        break;
+                }
+            }
+        }
+
+        private void KeyReader()
+        {
+            while (true)
+            {
+                ConsoleKey pressedKey = Console.ReadKey().Key;
+                /* In order to detect numerous keys pressed at once */
+                while (Console.KeyAvailable)
+                    Console.ReadKey(true);
+
+                switch (pressedKey)
+                {
+                    case ConsoleKey.UpArrow:
+                        Option--;
+                        break;
+                    case ConsoleKey.DownArrow:
+                        Option++;
+                        break;
+                    case ConsoleKey.Enter:
+                        break;
+                }
+            }
         }
 
         /// <summary>
