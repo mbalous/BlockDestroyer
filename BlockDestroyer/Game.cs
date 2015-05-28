@@ -19,44 +19,24 @@ namespace BlockDestroyer
         /// </summary>
         private int[,] Blocks { get; set; }
 
-        /// <summary>
-        ///     Random number generator.
-        /// </summary>
         private Random RandomGenerator { get; set; }
-
-        /// <summary>
-        ///     Property "is game running".
-        /// </summary>
         private bool IsGameRunning { get; set; }
-
-        /// <summary>
-        ///     Score property.
-        /// </summary>
         private int Score { get; set; }
-
-        /// <summary>
-        ///     Property holding blocks positions.
-        /// </summary>
-        private int[,] ConsoleBlocks { get; set; }
-
-        /// <summary>
-        ///     BallClass instance property.
-        /// </summary>
-        private BallClass Ball { get; set; }
-
-        /// <summary>
-        ///     BoardClass instance property.
-        /// </summary>
-        private BoardClass Board { get; set; }
+        private Ball GameBall { get; set; }
+        private Board GameBoard { get; set; }
+        private List<Block> BlocksList { get; set; }
 
         public Game()
         {
-            ConsoleBlocks = new int[Console.BufferWidth, Console.BufferHeight];
             RandomGenerator = new Random();
             BlocksList = new List<Block>();
         }
 
-        public void Start()
+        /// <summary>
+        ///     Start the game.
+        /// </summary>
+        /// <param name="gameSpeed">Aproximate duration of one tick in miliseconds.</param>
+        public void Start(int gameSpeed)
         {
             IsGameRunning = true;
             Score = 0;
@@ -65,7 +45,7 @@ namespace BlockDestroyer
             ResetBlocks();
 
             const byte boardWidth = 8;
-            Board = new BoardClass(
+            GameBoard = new Board(
                 xColumn: (Console.BufferWidth / 2) - boardWidth,
                 yRows: Console.BufferHeight - 1,
                 width: boardWidth,
@@ -74,7 +54,7 @@ namespace BlockDestroyer
                 exists: true,
                 color: ConsoleColor.Yellow);
 
-            Ball = new BallClass(
+            GameBall = new Ball(
                 xColumn: Console.WindowWidth / 2,
                 yRows: Console.WindowHeight / 2,
                 dir: (RandomGenerator.Next(0, 2) == 0) ? (Direction)new UpLeft() : new UpRight(),
@@ -86,10 +66,10 @@ namespace BlockDestroyer
 
             Thread inputThread = new Thread(ReadInput) { Name = "inputThread" };
             inputThread.Start();
-            GameLoop();
+            GameLoop(gameSpeed);
         }
 
-        private void GameLoop()
+        private void GameLoop(int gameSpeed)
         {
             while (IsGameRunning)
             {
@@ -104,54 +84,54 @@ namespace BlockDestroyer
                 MoveBall();
                 DrawBall();
                 */
-                Thread.Sleep(100);
+                Thread.Sleep(gameSpeed);
             }
         }
 
         private void MoveBall()
         {
-            Writer.ClearPosition(Ball.XColumn, Ball.YRow);
+            Writer.ClearPosition(GameBall.XColumn, GameBall.YRow);
 
-            if (Ball.Dir is UpLeft)
+            if (GameBall.Dir is UpLeft)
             {
-                Ball.XColumn--;
-                Ball.YRow--;
+                GameBall.XColumn--;
+                GameBall.YRow--;
             }
-            else if (Ball.Dir is UpRight)
+            else if (GameBall.Dir is UpRight)
             {
-                Ball.XColumn++;
-                Ball.YRow--;
+                GameBall.XColumn++;
+                GameBall.YRow--;
             }
-            else if (Ball.Dir is DownLeft)
+            else if (GameBall.Dir is DownLeft)
             {
-                Ball.XColumn--;
-                Ball.YRow++;
+                GameBall.XColumn--;
+                GameBall.YRow++;
             }
-            else if (Ball.Dir is DownRight)
+            else if (GameBall.Dir is DownRight)
             {
-                Ball.XColumn++;
-                Ball.YRow++;
+                GameBall.XColumn++;
+                GameBall.YRow++;
             }
         }
 
         private void DrawBall()
         {
-            Console.SetCursorPosition(Ball.XColumn, Ball.YRow);
-            Console.ForegroundColor = Ball.Color;
-            Console.Write(Ball.ObjectChar);
+            Console.SetCursorPosition(GameBall.XColumn, GameBall.YRow);
+            Console.ForegroundColor = GameBall.Color;
+            Console.Write(GameBall.ObjectChar);
             Console.ResetColor();
         }
 
         private void DrawBoard()
         {
             // Bug: when board is on the right end, screen shifts
-            if (Board.Exists)
+            if (GameBoard.Exists)
             {
-                Console.ForegroundColor = Board.Color;
-                Console.SetCursorPosition(Board.XColumn, Console.BufferHeight - 1);
+                Console.ForegroundColor = GameBoard.Color;
+                Console.SetCursorPosition(GameBoard.XColumn, Console.BufferHeight - 1);
 
-                for (int i = 0; i < Board.Width; i++)
-                    Console.Write(Board.BoardChar);
+                for (int i = 0; i < GameBoard.Width; i++)
+                    Console.Write(GameBoard.BoardChar);
 
                 Console.ResetColor();
             }
@@ -160,19 +140,19 @@ namespace BlockDestroyer
         private void MoveBoard()
         {
             int leftEnd = 0;
-            int rightEnd = Console.BufferWidth - Board.Width - 2;
+            int rightEnd = Console.BufferWidth - GameBoard.Width - 2;
 
-            Writer.ClearPosition(Board.XColumn, Board.YRow, Board.Width);
+            Writer.ClearPosition(GameBoard.XColumn, GameBoard.YRow, GameBoard.Width);
 
-            if (Board.XColumn <= leftEnd) //Changing board dir if were on the end
-                Board.Dir = true;
-            else if (Board.XColumn >= rightEnd)
-                Board.Dir = false;
+            if (GameBoard.XColumn <= leftEnd) //Changing board dir if were on the end
+                GameBoard.Dir = true;
+            else if (GameBoard.XColumn >= rightEnd)
+                GameBoard.Dir = false;
 
-            if (Board.Dir)
-                Board.XColumn += 1;
+            if (GameBoard.Dir)
+                GameBoard.XColumn += 1;
             else
-                Board.XColumn -= 1;
+                GameBoard.XColumn -= 1;
         }
 
         private void ReadInput()
@@ -180,26 +160,20 @@ namespace BlockDestroyer
             /* Moving the board */
             while (IsGameRunning)
             {
-                lock (Board)
+                lock (GameBoard)
                 {
                     ConsoleKey pressedKey = Console.ReadKey(true).Key;
-                    /* In order to detect numerous keys pressed at once */
-                    /*
-                    while (Console.KeyAvailable)
-                        Console.ReadKey(true);
-                    */
 
+                    /* In order to detect numerous keys pressed at once */
                     if (pressedKey == ConsoleKey.LeftArrow)
-                        Board.Dir = false;
+                        GameBoard.Dir = false;
 
                     if (pressedKey == ConsoleKey.RightArrow)
-                        Board.Dir = true;
+                        GameBoard.Dir = true;
                 }
             }
         }
 
-
-        public List<Block> BlocksList { get; set; }
 
         /// <summary>
         ///     Function resets all blocks. (Recreates them)
@@ -244,23 +218,6 @@ namespace BlockDestroyer
                 }
                 Console.Write(' ');
             }
-
-
-            /* xColumn and y are swapped because we need to print whole row first. */
-            /*
-            for (int y = 0; y < Blocks.GetLength(1); y++)
-            {
-                for (int x = 0; x < Blocks.GetLength(0); x++)
-                {
-
-                    if (Blocks[x, y] == 1)
-                        Console.Write("████ ");
-                    else
-                        Console.Write("     ");
-                }
-                Console.CursorTop += 1;
-            }
-            */
         }
 
 

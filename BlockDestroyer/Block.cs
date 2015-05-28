@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace BlockDestroyer
 {
+    /// <summary>
+    ///     Class representing sigle game block.
+    /// </summary>
     internal class Block : GameObject
     {
         /// <summary>
@@ -13,7 +16,7 @@ namespace BlockDestroyer
         /// <summary>
         ///     Width of the block
         /// </summary>
-        public int Width { get; set; }
+        public int Width { get; private set; }
 
         public Block(int xColumn, int yRow, bool exists, byte width, char objectChar, bool isBonus,
             ConsoleColor color = ConsoleColor.White)
@@ -35,6 +38,9 @@ namespace BlockDestroyer
         }
     }
 
+    /// <summary>
+    ///     Class representing exact position in console windows.
+    /// </summary>
     internal class ConsolePoint
     {
         public int x;

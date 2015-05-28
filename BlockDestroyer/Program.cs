@@ -13,7 +13,7 @@ namespace BlockDestroyer
             mainMenu.Run();
 #endif   
             Game game = new Game();
-            game.Start();
+            game.Start(100);
         }
 
         private static void Initialize()
