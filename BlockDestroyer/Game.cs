@@ -19,17 +19,42 @@ namespace BlockDestroyer
         /// </summary>
         private int[,] Blocks { get; set; }
 
-        private Random RandomGenerator { get; set; }
+        private readonly Random _randomGenerator;
         private bool IsGameRunning { get; set; }
         private int Score { get; set; }
         private Ball GameBall { get; set; }
         private Board GameBoard { get; set; }
         private List<Block> BlocksList { get; set; }
 
+        private readonly int[,] _corners;
+        readonly int _bufferWidth = Console.BufferWidth;
+        readonly int _bufferHeight = Console.BufferHeight;
+
         public Game()
         {
-            RandomGenerator = new Random();
+            _randomGenerator = new Random();
             BlocksList = new List<Block>();
+            _corners = new int[_bufferWidth + 1, _bufferHeight + 1];
+            CreateCorners();
+        }
+
+        private void CreateCorners()
+        {
+            for (int i = 0; i < _corners.GetLength(0); i++)
+            {
+                /* Top corner id - 1 */
+                _corners[i, 11] = 1;
+                /* Bottom corner - 2 */
+                _corners[i, _bufferHeight] = 2;
+            }
+
+            for (int i = 0; i < _corners.GetLength(1); i++)
+            {
+                /* Left corner - 3 */
+                _corners[0, i] = 3;
+                /* Right corner - 4 */
+                _corners[_bufferWidth, i] = 4;
+            }
         }
 
         /// <summary>
@@ -41,23 +66,23 @@ namespace BlockDestroyer
             IsGameRunning = true;
             Score = 0;
 
-            Blocks = new int[20, 5];
-            ResetBlocks();
+            //Blocks = new int[20, 5];
+            InitializeBlocksList();
 
             const byte boardWidth = 8;
             GameBoard = new Board(
-                xColumn: (Console.BufferWidth / 2) - boardWidth,
-                yRows: Console.BufferHeight - 1,
+                xColumn: (_bufferWidth / 2) - boardWidth,
+                yRows: _bufferHeight - 1,
                 width: boardWidth,
-                dir: RandomGenerator.Next(0, 2) == 0,
+                dir: _randomGenerator.Next(0, 2) == 0,
                 objectChar: '-',
                 exists: true,
                 color: ConsoleColor.Yellow);
 
             GameBall = new Ball(
-                xColumn: Console.WindowWidth / 2,
-                yRows: Console.WindowHeight / 2,
-                dir: (RandomGenerator.Next(0, 2) == 0) ? (Direction)new UpLeft() : new UpRight(),
+                xColumn: _bufferWidth / 2,
+                yRows: _bufferHeight / 2,
+                dir: (_randomGenerator.Next(0, 2) == 0) ? (Direction)new UpLeft() : new UpRight(),
                 objectChar: 'O',
                 exists: true,
                 color: ConsoleColor.Red);
@@ -74,15 +99,11 @@ namespace BlockDestroyer
             while (IsGameRunning)
             {
                 PrintScore();
-                PrintScore();
-
                 DrawBlocks();
-
                 MoveBoard();
                 DrawBoard();
-                MoveBall();
-                DrawBall();
-
+                //MoveBall();
+                //DrawBall();
                 Thread.Sleep(gameSpeed);
             }
         }
@@ -110,12 +131,8 @@ namespace BlockDestroyer
                     nextBallPosition = new ConsolePoint(GameBall.XColumn + 1, GameBall.YRow + 1);
                     break;
             }
-            Collison collison = CollisonCheck(
-                checkedPosition: nextBallPosition,
-                previousPosition: actualBallPosition);
 
-
-            if (//TODO: IMPLEMENT COLLISION)
+            if (true)
             {
                 if (GameBall.Dir is UpLeft)
                 {
@@ -140,21 +157,31 @@ namespace BlockDestroyer
             }
         }
 
-        private Collison CollisonCheck(ConsolePoint checkedPosition, ConsolePoint previousPosition)
+        private Collision CollisonCheck(ConsolePoint checkedPosition, ConsolePoint previousPosition)
         {
-            Collison collision = new Collison();
-
-
-
+            return new BottomColllison();
         }
 
-        private struct Collison
+        private abstract class Collision
         {
-            public object left;
-            public object right;
-            public object top;
-            public object bottom;
         }
+
+        private class LeftCollison : Collision
+        {
+        }
+
+        private class RightColllison : Collision
+        {
+        }
+
+        private class TopColllison : Collision
+        {
+        }
+
+        private class BottomColllison : Collision
+        {
+        }
+
 
         private void DrawBall()
         {
@@ -170,7 +197,7 @@ namespace BlockDestroyer
             if (GameBoard.Exists)
             {
                 Console.ForegroundColor = GameBoard.Color;
-                Console.SetCursorPosition(GameBoard.XColumn, Console.BufferHeight - 1);
+                Console.SetCursorPosition(GameBoard.XColumn, _bufferHeight - 1);
 
                 for (int i = 0; i < GameBoard.Width; i++)
                     Console.Write(GameBoard.BoardChar);
@@ -182,11 +209,12 @@ namespace BlockDestroyer
         private void MoveBoard()
         {
             int leftEnd = 0;
-            int rightEnd = Console.BufferWidth - GameBoard.Width - 2;
+            int rightEnd = _bufferWidth - GameBoard.Width - 2;
 
             Writer.ClearPosition(GameBoard.XColumn, GameBoard.YRow, GameBoard.Width);
 
-            if (GameBoard.XColumn <= leftEnd) //Changing board dir if were on the end
+            /* Changing board dir if were on the end */
+            if (GameBoard.XColumn <= leftEnd)
                 GameBoard.Dir = true;
             else if (GameBoard.XColumn >= rightEnd)
                 GameBoard.Dir = false;
@@ -218,15 +246,14 @@ namespace BlockDestroyer
 
 
         /// <summary>
-        ///     Function resets all blocks. (Recreates them)
+        ///     Function inicializes BlocksList.
         /// </summary>
-        private void ResetBlocks()
+        private void InitializeBlocksList()
         {
             const int blockRows = 5;
             const int blockColumns = 20;
 
             /* xColumn - columns */
-
             for (int col = 0; col < blockColumns; col++)
             {
                 /* yRow - rows */
@@ -234,13 +261,13 @@ namespace BlockDestroyer
                 {
                     BlocksList.Add(
                         new Block(
-                            xColumn: col,
-                            yRow: row,
-                            exists: true,
-                            width: 4,
-                            objectChar: '█',
-                            isBonus: false)
-                            );
+                                xColumn: col,
+                                yRow: row,
+                                exists: true,
+                                width: 4,
+                                objectChar: '█',
+                                isBonus: false)
+                        );
                 }
             }
         }
@@ -252,7 +279,7 @@ namespace BlockDestroyer
 
             foreach (Block block in BlocksList)
             {
-                var blockFirstPosition = block.AbsolutXyPoints[0];
+                ConsolePoint blockFirstPosition = block.AbsolutXyPoints[0];
                 Console.SetCursorPosition(blockFirstPosition.x, blockFirstPosition.y);
                 for (int i = 0; i < block.Width; i++)
                 {
@@ -282,8 +309,8 @@ namespace BlockDestroyer
         private void DrawScoreDivider()
         {
             /* Score divider */
-            for (int i = 0; i < Console.WindowWidth; i++)
-                Writer.PrintAtPosition(i, 5, '-');
+            for (int i = 0; i < _bufferWidth; i++)
+                Writer.PrintAtPosition(i, 5, '-', ConsoleColor.Cyan);
         }
     }
 }
