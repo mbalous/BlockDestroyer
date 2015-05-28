@@ -191,9 +191,9 @@ namespace BlockDestroyer
                 }
             }
         }
-        
-        
-        List<Block> _blocky = new List<Block>();
+
+
+        public List<Block> BlocksList { get; set; } = new List<Block>();
 
         /// <summary>
         ///     Function resets all blocks. (Recreates them)
@@ -201,13 +201,12 @@ namespace BlockDestroyer
         private void ResetBlocks()
         {
             /* Xposition - columns */
-            for (int x = 0; x < Blocks.GetLength(0); x++) 
+            for (int x = 0; x < 20; x++) 
             {
                 /* Yposition - rows */
-                for (int y = 0; y < Blocks.GetLength(1); y++)
+                for (int y = 0; y < 5; y++)
                 {
-                    Blocks[x, y] = 1;
-                    _blocky.Add(new Block(x, y));
+                    BlocksList.Add(new Block(x, y));
                 }
             }
         }
@@ -225,7 +224,7 @@ namespace BlockDestroyer
                 }
             }
 
-            foreach (Block block in _blocky)
+            foreach (Block block in BlocksList)
             {
                 
             }
