@@ -41,7 +41,6 @@ namespace BlockDestroyer
                         return;
 
                     Console.SetCursorPosition(0, 20);
-
                     for (int i = 0; i < menuItems.Count; i++)
                     {
                         if (i == _option)

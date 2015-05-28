@@ -1,8 +1,8 @@
 ﻿using System;
 
 /*
- * Columns stands for X axis
- * Rows stands for Y axis
+ * Columns stands for Xposition axis
+ * Rows stands for Yposition axis
  */
 
 namespace BlockDestroyer

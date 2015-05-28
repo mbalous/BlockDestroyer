@@ -1,29 +1,57 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 
 // ReSharper disable RedundantArgumentName
 // ReSharper disable RedundantArgumentNameForLiteralExpression
 
 /*
- * Columns stands for X axis
- * Rows stands for Y axis
+ * Columns stands for Xposition axis
+ * Rows stands for Yposition axis
  */
 
 namespace BlockDestroyer
 {
     internal class Game
     {
-        private Random RandomGenerator { get; set; }
-        private bool IsGameRunning { get; set; }
-        private int Score { get; set; }
-
+        /// <summary>
+        ///     [Xposition-columns, Yposition-rows]
+        /// </summary>
         private int[,] Blocks { get; set; }
 
+        /// <summary>
+        ///     Random number generator.
+        /// </summary>
+        private Random RandomGenerator { get; set; }
+
+        /// <summary>
+        ///     Property "is game running".
+        /// </summary>
+        private bool IsGameRunning { get; set; }
+
+        /// <summary>
+        ///     Score property.
+        /// </summary>
+        private int Score { get; set; }
+        
+        /// <summary>
+        ///     Property holding blocks positions.
+        /// </summary>
+        private int[,] ConsoleBlocks { get; set; }
+
+        /// <summary>
+        ///     BallClass instance property.
+        /// </summary>
         private BallClass Ball { get; set; }
+
+        /// <summary>
+        ///     BoardClass instance property.
+        /// </summary>
         private BoardClass Board { get; set; }
 
         public Game()
         {
+            ConsoleBlocks = new int[Console.BufferWidth,Console.BufferHeight];
             RandomGenerator = new Random();
         }
 
@@ -32,22 +60,21 @@ namespace BlockDestroyer
             IsGameRunning = true;
             Score = 0;
 
-            /* [rows, columns] */
-            Blocks = new int[5, 20];
+            Blocks = new int[20, 5];
             ResetBlocks();
 
             const byte boardWidth = 8;
             Board = new BoardClass(       
-                xPosition: (Console.BufferWidth / 2) - boardWidth,
-                yPosition: Console.BufferHeight - 1,
+                xColumn: (Console.BufferWidth / 2) - boardWidth,
+                yRows: Console.BufferHeight - 1,
                 width: boardWidth,
-                direction: RandomGenerator.Next(0, 2) == 0,
+                dir: RandomGenerator.Next(0, 2) == 0,
                 exists: true,
                 color: ConsoleColor.Yellow);
 
             Ball = new BallClass(
-                xPosition: Console.WindowWidth / 2, 
-                yPosition: Console.WindowHeight / 2,
+                xColumn: Console.WindowWidth / 2, 
+                yRows: Console.WindowHeight / 2,
                 dir: (RandomGenerator.Next(0, 2) == 0) ? (Direction)new UpLeft() : new UpRight(), 
                 ballChar: 'O',
                 exists: true, 
@@ -69,41 +96,41 @@ namespace BlockDestroyer
                 DrawBlocks();
                 MoveBoard();
                 DrawBoard();
-                
                 MoveBall();
                 DrawBall();
-                Thread.Sleep(10);
+                Thread.Sleep(100);
             }
         }
 
         private void MoveBall()
         {
-            Writer.ClearPosition(Ball.XPosition, Ball.YPosition);
+            Writer.ClearPosition(Ball.XColumn, Ball.YRow);
+            
             if (Ball.Dir is UpLeft)
             {
-                Ball.XPosition--;
-                Ball.YPosition--;
+                Ball.XColumn--;
+                Ball.YRow--;
             }
             else if (Ball.Dir is UpRight)
             {
-                Ball.XPosition++;
-                Ball.YPosition--;
+                Ball.XColumn++;
+                Ball.YRow--;
             }
             else if (Ball.Dir is DownLeft)
             {
-                Ball.XPosition--;
-                Ball.YPosition++;
+                Ball.XColumn--;
+                Ball.YRow++;
             }
             else if (Ball.Dir is DownRight)
             {
-                Ball.XPosition++;
-                Ball.YPosition++;
+                Ball.XColumn++;
+                Ball.YRow++;
             }
         }
 
         private void DrawBall()
         {
-            Console.SetCursorPosition(Ball.XPosition, Ball.YPosition);
+            Console.SetCursorPosition(Ball.XColumn, Ball.YRow);
             Console.ForegroundColor = Ball.Color;
             Console.Write(Ball.BallChar);
             Console.ResetColor();
@@ -115,7 +142,7 @@ namespace BlockDestroyer
             if (Board.Exists)
             {
                 Console.ForegroundColor = Board.Color;
-                Console.SetCursorPosition(Board.XPosition, Console.BufferHeight - 1);
+                Console.SetCursorPosition(Board.XColumn, Console.BufferHeight - 1);
                 
                 for (int i = 0; i < Board.Width; i++)
                     Console.Write(Board.BoardChar);
@@ -129,17 +156,17 @@ namespace BlockDestroyer
             int leftEnd = 0;
             int rightEnd = Console.BufferWidth - Board.Width - 2;
 
-            Writer.ClearPosition(Board.XPosition, Board.YPosition, Board.Width);
+            Writer.ClearPosition(Board.XColumn, Board.YRow, Board.Width);
 
-            if (Board.XPosition <= leftEnd) //Changing board dir if were on the end
-                Board.Direction = true;
-            else if (Board.XPosition >= rightEnd)
-                Board.Direction = false;
+            if (Board.XColumn <= leftEnd) //Changing board dir if were on the end
+                Board.Dir = true;
+            else if (Board.XColumn >= rightEnd)
+                Board.Dir = false;
 
-            if (Board.Direction)
-                Board.XPosition += 1;
+            if (Board.Dir)
+                Board.XColumn += 1;
             else
-                Board.XPosition -= 1;
+                Board.XColumn -= 1;
         }
 
         private void ReadInput()
@@ -157,24 +184,30 @@ namespace BlockDestroyer
                     */
 
                     if (pressedKey == ConsoleKey.LeftArrow)
-                        Board.Direction = false;
+                        Board.Dir = false;
 
                     if (pressedKey == ConsoleKey.RightArrow)
-                        Board.Direction = true;
+                        Board.Dir = true;
                 }
             }
         }
+        
+        
+        List<Block> _blocky = new List<Block>();
 
         /// <summary>
         ///     Function resets all blocks. (Recreates them)
         /// </summary>
         private void ResetBlocks()
         {
-            for (int i = 0; i < Blocks.GetLength(0); i++)
+            /* Xposition - columns */
+            for (int x = 0; x < Blocks.GetLength(0); x++) 
             {
-                for (int j = 0; j < Blocks.GetLength(1); j++)
+                /* Yposition - rows */
+                for (int y = 0; y < Blocks.GetLength(1); y++)
                 {
-                    Blocks[i, j] = 1;
+                    Blocks[x, y] = 1;
+                    _blocky.Add(new Block(x, y));
                 }
             }
         }
@@ -183,11 +216,28 @@ namespace BlockDestroyer
         {
             Console.SetCursorPosition(0, 0);
             Console.CursorTop = 10;
-            for (int j = 0; j < Blocks.GetLength(0); j++)
+
+            for (int x = 0; x < 20; x++)
             {
-                for (int i = 0; i < Blocks.GetLength(1); i++)
+                for (int y = 0; y < 5; y++)
                 {
-                    if (Blocks[j, i] == 1)
+                       
+                }
+            }
+
+            foreach (Block block in _blocky)
+            {
+                
+            }
+
+
+            /* Xposition and y are swapped because we need to print whole row first. */
+            for (int y = 0; y < Blocks.GetLength(1); y++)
+            {
+                for (int x = 0; x < Blocks.GetLength(0); x++)
+                {
+                    
+                    if (Blocks[x, y] == 1)
                         Console.Write("████ ");
                     else
                         Console.Write("     ");
