@@ -6,8 +6,8 @@ using System.Threading;
 // ReSharper disable RedundantArgumentNameForLiteralExpression
 
 /*
- * Columns stands for Xposition axis
- * Rows stands for Yposition axis
+ * Columns stands for xColumn axis
+ * Rows stands for yRow axis
  */
 
 namespace BlockDestroyer
@@ -15,7 +15,7 @@ namespace BlockDestroyer
     internal class Game
     {
         /// <summary>
-        ///     [Xposition-columns, Yposition-rows]
+        ///     [xColumn-columns, yRow-rows]
         /// </summary>
         private int[,] Blocks { get; set; }
 
@@ -200,13 +200,16 @@ namespace BlockDestroyer
         /// </summary>
         private void ResetBlocks()
         {
-            /* Xposition - columns */
+            /* xColumn - columns */
             for (int x = 0; x < 20; x++) 
             {
-                /* Yposition - rows */
+                /* yRow - rows */
                 for (int y = 0; y < 5; y++)
                 {
-                    BlocksList.Add(new Block(x, y));
+                    BlocksList.Add(new Block(
+                        xColumn: x,
+                        yRow: y,
+                        exists: true));
                 }
             }
         }
@@ -216,21 +219,17 @@ namespace BlockDestroyer
             Console.SetCursorPosition(0, 0);
             Console.CursorTop = 10;
 
-            for (int x = 0; x < 20; x++)
-            {
-                for (int y = 0; y < 5; y++)
-                {
-                       
-                }
-            }
-
             foreach (Block block in BlocksList)
             {
-                
+                Console.SetCursorPosition(block.XColumn, block.YRow);
+                //for (int i = 0; i < ; i++)
+                //{
+                    
+                //}
             }
 
 
-            /* Xposition and y are swapped because we need to print whole row first. */
+            /* xColumn and y are swapped because we need to print whole row first. */
             for (int y = 0; y < Blocks.GetLength(1); y++)
             {
                 for (int x = 0; x < Blocks.GetLength(0); x++)

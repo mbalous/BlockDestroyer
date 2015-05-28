@@ -6,24 +6,24 @@ using System.Threading.Tasks;
 
 namespace BlockDestroyer
 {
-    class Block
+    class Block : GameObject
     {
-        public int Xposition { get; set; }
-        public int Yposition { get; set; }
+        /// <summary>
+        ///     Exact list of coordianates where is the board.
+        /// </summary>
         public List<ConsolePoint> AbsolutXyPoints { get; }
 
-        public Block(int xposition, int yposition)
+        public Block(int xColumn, int yRow, bool exists, ConsoleColor color = ConsoleColor.White) : base(xColumn, yRow, exists, color)
         {
-            Xposition = xposition;
-            Yposition = yposition;
+
             AbsolutXyPoints = new List<ConsolePoint>();
 
-            int row = 10 + (yposition * 2);
+            int row = 10 + (yRow * 2);
             for (int i = 0; i < 4; i++)
             {
                 if (i == 0)
                 {
-                    AbsolutXyPoints.Add(new ConsolePoint(xposition * 5, row));
+                    AbsolutXyPoints.Add(new ConsolePoint(xColumn * 5, row));
                     continue;
                 }
                 AbsolutXyPoints.Add(new ConsolePoint(AbsolutXyPoints[0].x + i, row));

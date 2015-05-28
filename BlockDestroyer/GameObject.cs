@@ -11,7 +11,7 @@ namespace BlockDestroyer
         public int YRow { get; set; }
         public bool Exists { get; set; }
         public ConsoleColor Color { get; set; }
-
+        
         /// <summary>
         ///     Generic constuctor.
         /// </summary>

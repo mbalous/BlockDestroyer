@@ -7,8 +7,8 @@ namespace BlockDestroyer
         /// <summary>
         ///     BoardClass construcor
         /// </summary>
-        /// <param name="xColumn">Xposition position of the board - left corner (column).</param>
-        /// <param name="yRows">Yposition positon of the board (row).</param>
+        /// <param name="xColumn">xColumn position of the board - left corner (column).</param>
+        /// <param name="yRows">yRow positon of the board (row).</param>
         /// <param name="width">Width of the board.</param>
         /// <param name="dir">Which dir is the board heading. FALSE = left; TRUE = right</param>
         /// <param name="boardChar">Which character is going to be used to draw the board.</param>
