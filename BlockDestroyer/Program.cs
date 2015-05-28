@@ -13,7 +13,8 @@ namespace BlockDestroyer
             mainMenu.Run();
 #endif   
             Game game = new Game();
-            game.Start(100);
+            /* Parameter is game speed, 20 is optimal */
+            game.Start(20);
         }
 
         private static void Initialize()

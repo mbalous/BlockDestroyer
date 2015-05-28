@@ -68,6 +68,7 @@
   <ItemGroup>
     <Compile Include="Ball.cs" />
     <Compile Include="Block.cs" />
+    <Compile Include="ConsolePoint.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="Board.cs" />

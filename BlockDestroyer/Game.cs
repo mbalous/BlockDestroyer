@@ -73,45 +73,87 @@ namespace BlockDestroyer
         {
             while (IsGameRunning)
             {
-                /*
                 PrintScore();
                 PrintScore();
-                */
+
                 DrawBlocks();
-                /*
+
                 MoveBoard();
                 DrawBoard();
                 MoveBall();
                 DrawBall();
-                */
+
                 Thread.Sleep(gameSpeed);
             }
         }
 
         private void MoveBall()
         {
-            Writer.ClearPosition(GameBall.XColumn, GameBall.YRow);
+            ConsolePoint actualBallPosition = new ConsolePoint(GameBall.XColumn, GameBall.YRow);
+            ConsolePoint nextBallPosition = null;
 
-            if (GameBall.Dir is UpLeft)
+            Writer.ClearPosition(actualBallPosition.x, actualBallPosition.y);
+            string ballDirection = GameBall.Dir.GetType().ToString();
+
+            switch (ballDirection)
             {
-                GameBall.XColumn--;
-                GameBall.YRow--;
+                case "UpLeft":
+                    nextBallPosition = new ConsolePoint(GameBall.XColumn - 1, GameBall.YRow - 1);
+                    break;
+                case "UpRight":
+                    nextBallPosition = new ConsolePoint(GameBall.XColumn + 1, GameBall.YRow - 1);
+                    break;
+                case "DownLeft":
+                    nextBallPosition = new ConsolePoint(GameBall.XColumn - 1, GameBall.YRow + 1);
+                    break;
+                case "DownRight":
+                    nextBallPosition = new ConsolePoint(GameBall.XColumn + 1, GameBall.YRow + 1);
+                    break;
             }
-            else if (GameBall.Dir is UpRight)
+            Collison collison = CollisonCheck(
+                checkedPosition: nextBallPosition,
+                previousPosition: actualBallPosition);
+
+
+            if (//TODO: IMPLEMENT COLLISION)
             {
-                GameBall.XColumn++;
-                GameBall.YRow--;
+                if (GameBall.Dir is UpLeft)
+                {
+                    GameBall.XColumn--;
+                    GameBall.YRow--;
+                }
+                else if (GameBall.Dir is UpRight)
+                {
+                    GameBall.XColumn++;
+                    GameBall.YRow--;
+                }
+                else if (GameBall.Dir is DownLeft)
+                {
+                    GameBall.XColumn--;
+                    GameBall.YRow++;
+                }
+                else if (GameBall.Dir is DownRight)
+                {
+                    GameBall.XColumn++;
+                    GameBall.YRow++;
+                }
             }
-            else if (GameBall.Dir is DownLeft)
-            {
-                GameBall.XColumn--;
-                GameBall.YRow++;
-            }
-            else if (GameBall.Dir is DownRight)
-            {
-                GameBall.XColumn++;
-                GameBall.YRow++;
-            }
+        }
+
+        private Collison CollisonCheck(ConsolePoint checkedPosition, ConsolePoint previousPosition)
+        {
+            Collison collision = new Collison();
+
+
+
+        }
+
+        private struct Collison
+        {
+            public object left;
+            public object right;
+            public object top;
+            public object bottom;
         }
 
         private void DrawBall()
