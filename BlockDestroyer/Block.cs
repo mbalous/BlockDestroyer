@@ -8,7 +8,7 @@ namespace BlockDestroyer
         /// <summary>
         ///     Exact list of coordianates where is the board.
         /// </summary>
-        public List<ConsolePoint> AbsolutXyPoints { get; }
+        public List<ConsolePoint> AbsolutXyPoints { get; private set;}
 
         /// <summary>
         ///     Width of the block

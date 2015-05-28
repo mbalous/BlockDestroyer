@@ -8,9 +8,10 @@ namespace BlockDestroyer
         {
             Initialize();
             
+#if !DEBUG
             Menu mainMenu = new Menu();
             mainMenu.Run();
-            
+#endif   
             Game game = new Game();
             game.Start();
         }

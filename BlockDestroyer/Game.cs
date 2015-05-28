@@ -93,13 +93,17 @@ namespace BlockDestroyer
         {
             while (IsGameRunning)
             {
+                /*
                 PrintScore();
                 PrintScore();
+                */
                 DrawBlocks();
+                /*
                 MoveBoard();
                 DrawBoard();
                 MoveBall();
                 DrawBall();
+                */
                 Thread.Sleep(100);
             }
         }
@@ -202,19 +206,25 @@ namespace BlockDestroyer
         /// </summary>
         private void ResetBlocks()
         {
+            const int blockRows = 5;
+            const int blockColumns = 20;
+
             /* xColumn - columns */
-            for (int x = 0; x < 20; x++)
+
+            for (int col = 0; col < blockColumns; col++)
             {
                 /* yRow - rows */
-                for (int y = 0; y < 5; y++)
+                for (int row = 0; row < blockRows; row++)
                 {
-                    BlocksList.Add(new Block(
-                        xColumn: x,
-                        yRow: y,
-                        exists: true,
-                        width: 4,
-                        objectChar: '█',
-                        isBonus: false));
+                    BlocksList.Add(
+                        new Block(
+                            xColumn: col,
+                            yRow: row,
+                            exists: true,
+                            width: 4,
+                            objectChar: '█',
+                            isBonus: false)
+                            );
                 }
             }
         }
@@ -226,7 +236,8 @@ namespace BlockDestroyer
 
             foreach (Block block in BlocksList)
             {
-                Console.SetCursorPosition(block.XColumn, block.YRow);
+                var blockFirstPosition = block.AbsolutXyPoints[0];
+                Console.SetCursorPosition(blockFirstPosition.x, blockFirstPosition.y);
                 for (int i = 0; i < block.Width; i++)
                 {
                     Console.Write(block.ObjectChar);
@@ -236,6 +247,7 @@ namespace BlockDestroyer
 
 
             /* xColumn and y are swapped because we need to print whole row first. */
+            /*
             for (int y = 0; y < Blocks.GetLength(1); y++)
             {
                 for (int x = 0; x < Blocks.GetLength(0); x++)
@@ -248,6 +260,7 @@ namespace BlockDestroyer
                 }
                 Console.CursorTop += 1;
             }
+            */
         }
 
 
