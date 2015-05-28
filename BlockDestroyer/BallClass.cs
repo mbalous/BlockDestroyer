@@ -4,15 +4,13 @@ namespace BlockDestroyer
 {
     internal class BallClass : GameObject
     {
-        public char BallChar { get; set; }
         public Direction Dir { get; set; }
 
-        public BallClass(int xColumn, int yRows, bool exists, Direction dir, char ballChar,
+        public BallClass(int xColumn, int yRows, bool exists, Direction dir, char objectChar,
             ConsoleColor color = ConsoleColor.White)
-            : base(xColumn, yRows, exists, color)
+            : base(xColumn, yRows,objectChar, exists, color)
         {
             Dir = dir;
-            BallChar = ballChar;
         }
     }
 

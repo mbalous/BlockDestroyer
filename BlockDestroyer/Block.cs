@@ -1,21 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BlockDestroyer
 {
-    class Block : GameObject
+    internal class Block : GameObject
     {
         /// <summary>
         ///     Exact list of coordianates where is the board.
         /// </summary>
         public List<ConsolePoint> AbsolutXyPoints { get; }
 
-        public Block(int xColumn, int yRow, bool exists, ConsoleColor color = ConsoleColor.White) : base(xColumn, yRow, exists, color)
-        {
+        /// <summary>
+        ///     Width of the block
+        /// </summary>
+        public int Width { get; set; }
 
+        public Block(int xColumn, int yRow, bool exists, byte width, char objectChar, bool isBonus,
+            ConsoleColor color = ConsoleColor.White)
+            : base(xColumn, yRow, objectChar, exists, color)
+        {
+            Width = width;
             AbsolutXyPoints = new List<ConsolePoint>();
 
             int row = 10 + (yRow * 2);
@@ -31,8 +35,7 @@ namespace BlockDestroyer
         }
     }
 
-
-    class ConsolePoint
+    internal class ConsolePoint
     {
         public int x;
         public int y;

@@ -33,7 +33,7 @@ namespace BlockDestroyer
         ///     Score property.
         /// </summary>
         private int Score { get; set; }
-        
+
         /// <summary>
         ///     Property holding blocks positions.
         /// </summary>
@@ -51,8 +51,9 @@ namespace BlockDestroyer
 
         public Game()
         {
-            ConsoleBlocks = new int[Console.BufferWidth,Console.BufferHeight];
+            ConsoleBlocks = new int[Console.BufferWidth, Console.BufferHeight];
             RandomGenerator = new Random();
+            BlocksList = new List<Block>();
         }
 
         public void Start()
@@ -64,24 +65,25 @@ namespace BlockDestroyer
             ResetBlocks();
 
             const byte boardWidth = 8;
-            Board = new BoardClass(       
+            Board = new BoardClass(
                 xColumn: (Console.BufferWidth / 2) - boardWidth,
                 yRows: Console.BufferHeight - 1,
                 width: boardWidth,
                 dir: RandomGenerator.Next(0, 2) == 0,
+                objectChar: '-',
                 exists: true,
                 color: ConsoleColor.Yellow);
 
             Ball = new BallClass(
-                xColumn: Console.WindowWidth / 2, 
+                xColumn: Console.WindowWidth / 2,
                 yRows: Console.WindowHeight / 2,
-                dir: (RandomGenerator.Next(0, 2) == 0) ? (Direction)new UpLeft() : new UpRight(), 
-                ballChar: 'O',
-                exists: true, 
+                dir: (RandomGenerator.Next(0, 2) == 0) ? (Direction)new UpLeft() : new UpRight(),
+                objectChar: 'O',
+                exists: true,
                 color: ConsoleColor.Red);
 
             DrawScoreDivider();
-            
+
             Thread inputThread = new Thread(ReadInput) { Name = "inputThread" };
             inputThread.Start();
             GameLoop();
@@ -105,7 +107,7 @@ namespace BlockDestroyer
         private void MoveBall()
         {
             Writer.ClearPosition(Ball.XColumn, Ball.YRow);
-            
+
             if (Ball.Dir is UpLeft)
             {
                 Ball.XColumn--;
@@ -132,7 +134,7 @@ namespace BlockDestroyer
         {
             Console.SetCursorPosition(Ball.XColumn, Ball.YRow);
             Console.ForegroundColor = Ball.Color;
-            Console.Write(Ball.BallChar);
+            Console.Write(Ball.ObjectChar);
             Console.ResetColor();
         }
 
@@ -143,7 +145,7 @@ namespace BlockDestroyer
             {
                 Console.ForegroundColor = Board.Color;
                 Console.SetCursorPosition(Board.XColumn, Console.BufferHeight - 1);
-                
+
                 for (int i = 0; i < Board.Width; i++)
                     Console.Write(Board.BoardChar);
 
@@ -193,7 +195,7 @@ namespace BlockDestroyer
         }
 
 
-        public List<Block> BlocksList { get; set; } = new List<Block>();
+        public List<Block> BlocksList { get; set; }
 
         /// <summary>
         ///     Function resets all blocks. (Recreates them)
@@ -201,7 +203,7 @@ namespace BlockDestroyer
         private void ResetBlocks()
         {
             /* xColumn - columns */
-            for (int x = 0; x < 20; x++) 
+            for (int x = 0; x < 20; x++)
             {
                 /* yRow - rows */
                 for (int y = 0; y < 5; y++)
@@ -209,7 +211,10 @@ namespace BlockDestroyer
                     BlocksList.Add(new Block(
                         xColumn: x,
                         yRow: y,
-                        exists: true));
+                        exists: true,
+                        width: 4,
+                        objectChar: '█',
+                        isBonus: false));
                 }
             }
         }
@@ -222,10 +227,11 @@ namespace BlockDestroyer
             foreach (Block block in BlocksList)
             {
                 Console.SetCursorPosition(block.XColumn, block.YRow);
-                //for (int i = 0; i < ; i++)
-                //{
-                    
-                //}
+                for (int i = 0; i < block.Width; i++)
+                {
+                    Console.Write(block.ObjectChar);
+                }
+                Console.Write(' ');
             }
 
 
@@ -234,7 +240,7 @@ namespace BlockDestroyer
             {
                 for (int x = 0; x < Blocks.GetLength(0); x++)
                 {
-                    
+
                     if (Blocks[x, y] == 1)
                         Console.Write("████ ");
                     else
