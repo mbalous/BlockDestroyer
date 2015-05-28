@@ -2,12 +2,15 @@ using System;
 
 namespace BlockDestroyer
 {
+    /// <summary>
+    ///     Class representing generic game object.
+    /// </summary>
     abstract class GameObject
     {
         public int XPosition { get; set; }
         public int YPosition { get; set; }
-        bool Exists { get; set; }
-        ConsoleColor Color { get; set; }
+        public bool Exists { get; set; }
+        public ConsoleColor Color { get; set; }
 
         /// <summary>
         ///     Generic constuctor.

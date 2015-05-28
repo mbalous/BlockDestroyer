@@ -2,10 +2,10 @@
 
 namespace BlockDestroyer
 {
-    internal class Board : GameObject
+    internal class BoardClass : GameObject
     {
         /// <summary>
-        ///     Board construcor
+        ///     BoardClass construcor
         /// </summary>
         /// <param name="xPosition">X position of the board - left corner (column).</param>
         /// <param name="yPosition">Y positon of the board (row).</param>
@@ -13,8 +13,8 @@ namespace BlockDestroyer
         /// <param name="direction">Which direction is the board heading. FALSE = left; TRUE = right</param>
         /// <param name="boardChar">Which character is going to be used to draw the board.</param>
         /// <param name="exists">Does the object exist?</param>
-        /// <param name="color"></param>
-        public Board(int xPosition,
+        /// <param name="color">Color of the board.</param>
+        public BoardClass(int xPosition,
             int yPosition,
             byte width,
             bool direction,
@@ -31,7 +31,7 @@ namespace BlockDestroyer
         /// <summary>
         ///     Which character is going to be used to draw the board.
         /// </summary>
-        public char BoardChar { get; }
+        public char BoardChar { get; set; }
 
         /// <summary>
         ///     Width of the board

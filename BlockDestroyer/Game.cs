@@ -14,115 +14,167 @@ namespace BlockDestroyer
     internal class Game
     {
         private Random RandomGenerator { get; set; }
-        private bool IsRunning { get; set; }
+        private bool IsGameRunning { get; set; }
         private int Score { get; set; }
-        private Board BoardObject { get; set; }
-        private int[,] BlocksArray { get; set; }
+
+        private int[,] Blocks { get; set; }
+
+        private BallClass Ball { get; set; }
+        private BoardClass Board { get; set; }
 
         public Game()
         {
             RandomGenerator = new Random();
-            BlocksArray = new int[5, 20]; // [rows, columns]
         }
 
         public void Start()
         {
-            IsRunning = true;
+            IsGameRunning = true;
             Score = 0;
-            InitializeBoard();
+
+            /* [rows, columns] */
+            Blocks = new int[5, 20];
+            ResetBlocks();
+
+            const byte boardWidth = 8;
+            Board = new BoardClass(       
+                xPosition: (Console.BufferWidth / 2) - boardWidth,
+                yPosition: Console.BufferHeight - 1,
+                width: boardWidth,
+                direction: RandomGenerator.Next(0, 2) == 0,
+                exists: true,
+                color: ConsoleColor.Yellow);
+
+            Ball = new BallClass(
+                xPosition: Console.WindowWidth / 2, 
+                yPosition: Console.WindowHeight / 2,
+                dir: (RandomGenerator.Next(0, 2) == 0) ? (Direction)new UpLeft() : new UpRight(), 
+                ballChar: 'O',
+                exists: true, 
+                color: ConsoleColor.Red);
 
             DrawScoreDivider();
-            ResetBlocks();
             
-            Thread inputThread = new Thread(ReadInput) {Name = "inputThread"};
+            Thread inputThread = new Thread(ReadInput) { Name = "inputThread" };
             inputThread.Start();
-
             GameLoop();
         }
 
         private void GameLoop()
         {
-            while (true)
+            while (IsGameRunning)
             {
                 PrintScore();
+                PrintScore();
+                DrawBlocks();
                 MoveBoard();
-                DrawBoard(); // draws board according to its position
-                PrintScore(); // draws divider and score
-                DrawBlocks(); // draws blocks
-                Thread.Sleep(90);
+                DrawBoard();
+                
+                MoveBall();
+                DrawBall();
+                Thread.Sleep(10);
             }
+        }
+
+        private void MoveBall()
+        {
+            Writer.ClearPosition(Ball.XPosition, Ball.YPosition);
+            if (Ball.Dir is UpLeft)
+            {
+                Ball.XPosition--;
+                Ball.YPosition--;
+            }
+            else if (Ball.Dir is UpRight)
+            {
+                Ball.XPosition++;
+                Ball.YPosition--;
+            }
+            else if (Ball.Dir is DownLeft)
+            {
+                Ball.XPosition--;
+                Ball.YPosition++;
+            }
+            else if (Ball.Dir is DownRight)
+            {
+                Ball.XPosition++;
+                Ball.YPosition++;
+            }
+        }
+
+        private void DrawBall()
+        {
+            Console.SetCursorPosition(Ball.XPosition, Ball.YPosition);
+            Console.ForegroundColor = Ball.Color;
+            Console.Write(Ball.BallChar);
+            Console.ResetColor();
         }
 
         private void DrawBoard()
         {
             // Bug: when board is on the right end, screen shifts
-            Console.SetCursorPosition(BoardObject.XPosition, Console.BufferHeight - 1);
-            for (int i = 0; i < BoardObject.Width; i++)
-                Console.Write(BoardObject.BoardChar);
-        }
+            if (Board.Exists)
+            {
+                Console.ForegroundColor = Board.Color;
+                Console.SetCursorPosition(Board.XPosition, Console.BufferHeight - 1);
+                
+                for (int i = 0; i < Board.Width; i++)
+                    Console.Write(Board.BoardChar);
 
-        private void InitializeBoard()
-        {
-            BoardObject = new Board(
-                xPosition: Console.WindowWidth/2,
-                yPosition: Console.BufferHeight - 1,
-                width: 8,
-                direction: RandomGenerator.Next(0, 1) == 0,
-                exists: true,
-                color: ConsoleColor.Yellow);
+                Console.ResetColor();
+            }
         }
 
         private void MoveBoard()
         {
             int leftEnd = 0;
-            int rightEnd = Console.BufferWidth - BoardObject.Width - 2;
+            int rightEnd = Console.BufferWidth - Board.Width - 2;
 
-            Writer.ClearPosition(BoardObject.XPosition, BoardObject.YPosition, BoardObject.Width);
+            Writer.ClearPosition(Board.XPosition, Board.YPosition, Board.Width);
 
-            if (BoardObject.XPosition <= leftEnd) //Changing board direction if were on the end
-                BoardObject.Direction = true;
-            else if (BoardObject.XPosition >= rightEnd)
-                BoardObject.Direction = false;
+            if (Board.XPosition <= leftEnd) //Changing board dir if were on the end
+                Board.Direction = true;
+            else if (Board.XPosition >= rightEnd)
+                Board.Direction = false;
 
-            if (BoardObject.Direction)
-                BoardObject.XPosition += 1;
+            if (Board.Direction)
+                Board.XPosition += 1;
             else
-                BoardObject.XPosition -= 1;
+                Board.XPosition -= 1;
         }
 
         private void ReadInput()
         {
             /* Moving the board */
-            while (true)
+            while (IsGameRunning)
             {
-                lock (this)
+                lock (Board)
                 {
-
-                    ConsoleKey pressedKey = Console.ReadKey().Key;
+                    ConsoleKey pressedKey = Console.ReadKey(true).Key;
                     /* In order to detect numerous keys pressed at once */
+                    /*
                     while (Console.KeyAvailable)
                         Console.ReadKey(true);
+                    */
 
                     if (pressedKey == ConsoleKey.LeftArrow)
-                        BoardObject.Direction = false;
+                        Board.Direction = false;
 
                     if (pressedKey == ConsoleKey.RightArrow)
-                        BoardObject.Direction = true;
+                        Board.Direction = true;
                 }
             }
         }
-
 
         /// <summary>
         ///     Function resets all blocks. (Recreates them)
         /// </summary>
         private void ResetBlocks()
         {
-            for (int i = 0; i < BlocksArray.GetLength(0); i++)
+            for (int i = 0; i < Blocks.GetLength(0); i++)
             {
-                for (int j = 0; j < BlocksArray.GetLength(1); j++)
+                for (int j = 0; j < Blocks.GetLength(1); j++)
                 {
-                    BlocksArray[i, j] = 1;
+                    Blocks[i, j] = 1;
                 }
             }
         }
@@ -131,11 +183,11 @@ namespace BlockDestroyer
         {
             Console.SetCursorPosition(0, 0);
             Console.CursorTop = 10;
-            for (int j = 0; j < BlocksArray.GetLength(0); j++)
+            for (int j = 0; j < Blocks.GetLength(0); j++)
             {
-                for (int i = 0; i < BlocksArray.GetLength(1); i++)
+                for (int i = 0; i < Blocks.GetLength(1); i++)
                 {
-                    if (BlocksArray[j, i] == 1)
+                    if (Blocks[j, i] == 1)
                         Console.Write("████ ");
                     else
                         Console.Write("     ");
@@ -143,7 +195,7 @@ namespace BlockDestroyer
                 Console.CursorTop += 1;
             }
         }
-        
+
 
         /// <summary>
         ///     Function prints score above the score divider.
