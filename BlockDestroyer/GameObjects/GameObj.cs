@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace BlockDestroyer.GameObjects
 {
@@ -12,8 +13,9 @@ namespace BlockDestroyer.GameObjects
         public char ObjectChar { get; set; }
         public bool Exists { get; set; }
         public ConsoleColor Color { get; set; }
+        public List<ConsolePoint> AbsolutXyPoints { get; set; }
 
-        /// <summary>gndanjanm
+        /// <summary>
         ///     Generic constuctor.
         /// </summary>
         protected GameObj(int xColumn, int yRow, char objectChar, bool exists, ConsoleColor color = ConsoleColor.White)
@@ -23,6 +25,7 @@ namespace BlockDestroyer.GameObjects
             ObjectChar = objectChar;
             Exists = exists;
             Color = color;
+            AbsolutXyPoints = new List<ConsolePoint>();
         }
     }
 }

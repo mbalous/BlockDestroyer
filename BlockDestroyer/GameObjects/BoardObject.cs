@@ -1,9 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace BlockDestroyer.GameObjects
 {
     internal class BoardObject : GameObj
     {
+        /// <summary>
+        ///     Width of the board
+        /// </summary>
+        public byte Width { get; private set; }
+
+        /// <summary>
+        ///     dir of the board
+        ///     true = moving right
+        ///     false = moving left
+        /// </summary>
+        public bool Dir { get; set; }
+
         /// <summary>
         ///     BoardObject construcor
         /// </summary>
@@ -20,23 +33,17 @@ namespace BlockDestroyer.GameObjects
         {
             Width = width;
             Dir = dir;
+            AbsolutXyPoints = GetBoardExactPosition(xColumn, yRows, width);
         }
 
-        /// <summary>
-        ///     Which character is going to be used to draw the board.
-        /// </summary>
-        public char BoardChar { get; set; }
-
-        /// <summary>
-        ///     Width of the board
-        /// </summary>
-        public byte Width { get; private set; }
-
-        /// <summary>
-        ///     dir of the board
-        ///     true = moving right
-        ///     false = moving left
-        /// </summary>
-        public bool Dir { get; set; }
+        private List<ConsolePoint> GetBoardExactPosition(int xColumn, int yRows, byte width)
+        {
+            List<ConsolePoint> boardConsolePoints = new List<ConsolePoint>(width);
+            for (int i = 0; i < width; i++)
+            {
+                boardConsolePoints.Add(new ConsolePoint(xColumn + i, yRows));
+            }
+            return boardConsolePoints;
+        }
     }
 }
