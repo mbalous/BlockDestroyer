@@ -77,7 +77,7 @@ namespace BlockDestroyer
             {
                 ConsoleKey pressedKey = Console.ReadKey(true).Key;
                 /* In order to detect numerous keys pressed at once */
-                
+
                 /*
                 while (Console.KeyAvailable)
                     Console.ReadKey(true);

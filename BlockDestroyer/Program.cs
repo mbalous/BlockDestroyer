@@ -7,11 +7,11 @@ namespace BlockDestroyer
         static void Main()
         {
             Initialize();
-            
+
 #if !DEBUG
             Menu mainMenu = new Menu();
             mainMenu.Run();
-#endif   
+#endif
             Game game = new Game();
             /* Parameter is game speed, 20 is optimal */
             game.Start(20);
@@ -19,11 +19,11 @@ namespace BlockDestroyer
 
         private static void Initialize()
         {
-            Console.Title = "**Block Destroyer**";
+            Console.Title = "**BlockObject Destroyer**";
             Console.CursorVisible = false;
 
             Console.BufferHeight = Console.WindowHeight = 40;
-            Console.BufferWidth = Console.WindowWidth = 100;
+            Console.BufferWidth = Console.WindowWidth = 117;
 
             Console.CursorVisible = false;
         }

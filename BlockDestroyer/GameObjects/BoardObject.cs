@@ -1,27 +1,25 @@
 ﻿using System;
 
-namespace BlockDestroyer
+namespace BlockDestroyer.GameObjects
 {
-    internal class Board : GameObject
+    internal class BoardObject : GameObj
     {
         /// <summary>
-        ///     Board construcor
+        ///     BoardObject construcor
         /// </summary>
         /// <param name="xColumn">xColumn position of the board - left corner (column).</param>
         /// <param name="yRows">yRow positon of the board (row).</param>
         /// <param name="width">Width of the board.</param>
         /// <param name="dir">Which dir is the board heading. FALSE = left; TRUE = right</param>
-        /// <param name="objectChar"></param>
-        /// <param name="boardChar">Which character is going to be used to draw the board.</param>
+        /// <param name="objectChar">Which character is going to be used to draw the board.</param>
         /// <param name="exists">Does the object exist?</param>
         /// <param name="color">Color of the board.</param>
-        public Board(int xColumn, int yRows, byte width, bool dir, char objectChar, char boardChar = '-',
+        public BoardObject(int xColumn, int yRows, byte width, bool dir, char objectChar,
             bool exists = true, ConsoleColor color = ConsoleColor.White)
             : base(xColumn, yRows, objectChar, exists)
         {
             Width = width;
             Dir = dir;
-            BoardChar = boardChar;
         }
 
         /// <summary>

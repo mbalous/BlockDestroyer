@@ -1,14 +1,14 @@
 ﻿using System;
 
-namespace BlockDestroyer
+namespace BlockDestroyer.GameObjects.Ball
 {
-    internal class Ball : GameObject
+    internal class BallObject : GameObj
     {
         public Direction Dir { get; set; }
 
-        public Ball(int xColumn, int yRows, bool exists, Direction dir, char objectChar,
+        public BallObject(int xColumn, int yRows, bool exists, Direction dir, char objectChar,
             ConsoleColor color = ConsoleColor.White)
-            : base(xColumn, yRows,objectChar, exists, color)
+            : base(xColumn, yRows, objectChar, exists, color)
         {
             Dir = dir;
         }
