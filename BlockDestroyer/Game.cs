@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using BlockDestroyer.GameObjects;
 using BlockDestroyer.GameObjects.Ball;
@@ -17,30 +18,29 @@ namespace BlockDestroyer
     internal class Game
     {
         private readonly Random _randomGenerator;
+        private readonly CollisionEngine _collisionEngine;
+
+
         private bool IsGameRunning { get; set; }
         private int Score { get; set; }
 
+
         private BallObject Ball { get; set; }
         private BoardObject Board { get; set; }
+        private List<BlockObject> BlockList { get; set; }
 
-        private int[,] Corners { get; set; }
         readonly int _bufferWidth;
         readonly int _bufferHeight;
 
-        private static List<BlockObject> BlockList { get; set; }
-        
-
         public Game()
         {
-            CreateCorners();
+            _randomGenerator = new Random();
+            _collisionEngine = new CollisionEngine();
+
+            BlockList = new List<BlockObject>();
 
             _bufferWidth = Console.BufferWidth;
             _bufferHeight = Console.BufferHeight;
-
-            _randomGenerator = new Random();
-            BlockList = new List<BlockObject>();
-
-            Corners = null;
         }
 
 
@@ -65,7 +65,7 @@ namespace BlockDestroyer
 
             Board = new BoardObject(
                 xColumn: (_bufferWidth / 2) - boardWidth,
-                yRows: _bufferHeight - 1,
+                yRow: _bufferHeight - 3,
                 width: boardWidth,
                 dir: _randomGenerator.Next(0, 2) == 0,
                 objectChar: '-',
@@ -74,38 +74,63 @@ namespace BlockDestroyer
 
             Ball = new BallObject(
                 xColumn: _bufferWidth / 2,
-                yRows: _bufferHeight / 2,
+                yRow: _bufferHeight / 2,
                 dir: (_randomGenerator.Next(0, 2) == 0) ? (Direction)new UpLeft() : new UpRight(),
                 objectChar: 'O',
                 exists: true,
                 color: ConsoleColor.Red);
 
-            DrawScoreDivider();
+            GenerateCorners();
+            DrawEdges();
 
             Thread inputThread = new Thread(ReadInput) { Name = "inputThread" };
             inputThread.Start();
             GameLoop(gameSpeed);
         }
 
-        private void CreateCorners()
+        private void GenerateCorners()
         {
-            
-            //// TODO: Finish corner creating
-            //for (int i = 0; i < _corners.GetLength(0); i++)
-            //{
-            //    /* Top corner id - 1 */
-            //    _corners[i, 11] = 1;
-            //    /* Bottom corner - 2 */
-            //    _corners[i, _bufferHeight] = 2;
-            //}
 
-            //for (int i = 0; i < _corners.GetLength(1); i++)
-            //{
-            //    /* Left corner - 3 */
-            //    _corners[0, i] = 3;
-            //    /* Right corner - 4 */
-            //    _corners[_bufferWidth, i] = 4;
-            //}
+        }
+
+        private void DrawEdges()
+        {
+            /* Left edge */
+            for (int i = 5; i < _bufferHeight - 1; i++)
+            {
+                Writer.PrintAtPosition(col: 1, row: i, charToPrint: '║', color: ConsoleColor.Cyan);
+            }
+            /* Right edge */
+            for (int i = 5; i < _bufferHeight - 1; i++)
+            {
+                Writer.PrintAtPosition(col: _bufferWidth - 2, row: i, charToPrint: '║', color: ConsoleColor.Cyan);
+            }
+
+            /* TOP & bottom edge */
+            for (int i = 1; i < _bufferWidth - 1; i++)
+            {
+                /* TOP egde - score divider */
+                if (i == 1)
+                {
+                    /* TOP edge */
+                    Writer.PrintAtPosition(col: i, row: 5, charToPrint: '╔', color: ConsoleColor.Cyan);
+                    /* Bottom edge */
+                    Writer.PrintAtPosition(col: i, row: _bufferHeight - 2, charToPrint: '╚', color: ConsoleColor.Cyan);
+                    continue;
+                }
+                if (i == _bufferWidth - 2)
+                {
+                    /* TOP edge */
+                    Writer.PrintAtPosition(col: i, row: 5, charToPrint: '╗', color: ConsoleColor.Cyan);
+                    /* Bottom edge */
+                    Writer.PrintAtPosition(col: i, row: _bufferHeight - 2, charToPrint: '╝', color: ConsoleColor.Cyan);
+                    continue;
+                }
+                Writer.PrintAtPosition(col: i, row: 5, charToPrint: '═', color: ConsoleColor.Cyan);
+
+                /* Bottom egde */
+                Writer.PrintAtPosition(col: i, row: _bufferHeight - 2, charToPrint: '═', color: ConsoleColor.Cyan);
+            }
         }
 
         private void GameLoop(int gameSpeed)
@@ -125,50 +150,93 @@ namespace BlockDestroyer
         private void MoveBall()
         {
             ConsolePoint actualBallPosition = new ConsolePoint(Ball.XColumn, Ball.YRow);
+            Writer.ClearPosition(actualBallPosition.x, actualBallPosition.y);
+
+            ConsolePoint nextBallPosition = GetNextBallPosition();
+
+            Collision collison = _collisionEngine.DetectCollision(actualBallPosition, nextBallPosition, Board, BlockList);
+
+            if (collison is TopCollision)
+            {
+                FlipVerticalBallDirection();
+            }
+            else if (collison is BottomCollision)
+            {
+                FlipVerticalBallDirection();
+            }
+            else if (collison is RightCollision)
+            {
+
+            }
+            else if (collison is LeftCollision)
+            {
+
+            }
+
+            if (Ball.Dir is UpLeft)
+            {
+                Ball.XColumn--;
+                Ball.YRow--;
+            }
+            else if (Ball.Dir is UpRight)
+            {
+                Ball.XColumn++;
+                Ball.YRow--;
+            }
+            else if (Ball.Dir is DownLeft)
+            {
+                Ball.XColumn--;
+                Ball.YRow++;
+            }
+            else if (Ball.Dir is DownRight)
+            {
+                Ball.XColumn++;
+                Ball.YRow++;
+            }
+
+        }
+
+        private void FlipVerticalBallDirection()
+        {
+            if (Ball.Dir is UpLeft)
+            {
+                Ball.Dir = new DownLeft();
+            }
+            else if (Ball.Dir is UpRight)
+            {
+                Ball.Dir = new DownRight();
+            }
+            else if (Ball.Dir is DownLeft)
+            {
+                Ball.Dir = new UpLeft();
+            }
+            else if (Ball.Dir is DownRight)
+            {
+                Ball.Dir = new UpRight();
+            }
+        }
+
+        private ConsolePoint GetNextBallPosition()
+        {
             ConsolePoint nextBallPosition = null;
 
-            Writer.ClearPosition(actualBallPosition.x, actualBallPosition.y);
-            string ballDirection = Ball.Dir.GetType().ToString();
-
-            switch (ballDirection)
+            if (Ball.Dir is UpLeft)
             {
-                case "UpLeft":
-                    nextBallPosition = new ConsolePoint(Ball.XColumn - 1, Ball.YRow - 1);
-                    break;
-                case "UpRight":
-                    nextBallPosition = new ConsolePoint(Ball.XColumn + 1, Ball.YRow - 1);
-                    break;
-                case "DownLeft":
-                    nextBallPosition = new ConsolePoint(Ball.XColumn - 1, Ball.YRow + 1);
-                    break;
-                case "DownRight":
-                    nextBallPosition = new ConsolePoint(Ball.XColumn + 1, Ball.YRow + 1);
-                    break;
+                nextBallPosition = new ConsolePoint(Ball.XColumn - 1, Ball.YRow - 1);
             }
-
-            if (true)
+            else if (Ball.Dir is UpRight)
             {
-                if (Ball.Dir is UpLeft)
-                {
-                    Ball.XColumn--;
-                    Ball.YRow--;
-                }
-                else if (Ball.Dir is UpRight)
-                {
-                    Ball.XColumn++;
-                    Ball.YRow--;
-                }
-                else if (Ball.Dir is DownLeft)
-                {
-                    Ball.XColumn--;
-                    Ball.YRow++;
-                }
-                else if (Ball.Dir is DownRight)
-                {
-                    Ball.XColumn++;
-                    Ball.YRow++;
-                }
+                nextBallPosition = new ConsolePoint(Ball.XColumn + 1, Ball.YRow - 1);
             }
+            else if (Ball.Dir is DownLeft)
+            {
+                nextBallPosition = new ConsolePoint(Ball.XColumn - 1, Ball.YRow + 1);
+            }
+            else if (Ball.Dir is DownRight)
+            {
+                nextBallPosition = new ConsolePoint(Ball.XColumn + 1, Ball.YRow + 1);
+            }
+            return nextBallPosition;
         }
 
         private void DrawBall()
@@ -183,15 +251,17 @@ namespace BlockDestroyer
             {
                 string board = null;
                 for (int i = 0; i < Board.Width; i++)
+                {
                     board += Board.ObjectChar;
+                }
 
-                Writer.PrintAtPosition(Board.XColumn, _bufferHeight - 1, board, Board.Color);
+                Writer.PrintAtPosition(Board.XColumn, Board.YRow, board, Board.Color);
             }
         }
 
         private void MoveBoard()
         {
-            int leftEnd = 0;
+            int leftEnd = 2;
             int rightEnd = _bufferWidth - Board.Width - 2;
 
             Writer.ClearPosition(Board.XColumn, Board.YRow, Board.Width);
@@ -266,7 +336,7 @@ namespace BlockDestroyer
                     blck += block.ObjectChar;
 
                 Writer.PrintAtPosition(blockFirstPosition.x, blockFirstPosition.y, blck, block.Color);
-                Console.Write("  ");
+
             }
         }
 
@@ -289,9 +359,7 @@ namespace BlockDestroyer
         /// </summary>
         private void DrawScoreDivider()
         {
-            /* Score divider */
-            for (int i = 0; i < _bufferWidth; i++)
-                Writer.PrintAtPosition(i, 5, '-', ConsoleColor.Cyan);
+
         }
     }
 }

@@ -23,7 +23,7 @@ namespace BlockDestroyer
             Console.CursorVisible = false;
 
             Console.BufferHeight = Console.WindowHeight = 40;
-            Console.BufferWidth = Console.WindowWidth = 117;
+            Console.BufferWidth = Console.WindowWidth = 125;
 
             Console.CursorVisible = false;
         }

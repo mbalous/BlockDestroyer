@@ -29,7 +29,7 @@ namespace BlockDestroyer.GameObjects
             {
                 if (i == 0)
                 {
-                    blockConsolePoints.Add(new ConsolePoint(x: (xColumn * (width + spaces)) + 1, y: row));
+                    blockConsolePoints.Add(new ConsolePoint(x: (xColumn * (width + spaces)) + 5, y: row));
                     continue;
                 }
                 blockConsolePoints.Add(new ConsolePoint(x: blockConsolePoints[0].x + i, y: row));

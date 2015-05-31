@@ -6,9 +6,9 @@ namespace BlockDestroyer.GameObjects.Ball
     {
         public Direction Dir { get; set; }
 
-        public BallObject(int xColumn, int yRows, bool exists, Direction dir, char objectChar,
+        public BallObject(int xColumn, int yRow, bool exists, Direction dir, char objectChar,
             ConsoleColor color = ConsoleColor.White)
-            : base(xColumn, yRows, objectChar, exists, color)
+            : base(xColumn, yRow, objectChar, exists, color)
         {
             Dir = dir;
         }
