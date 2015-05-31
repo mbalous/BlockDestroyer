@@ -6,15 +6,8 @@ namespace BlockDestroyer.GameObjects
     /// <summary>
     ///     Class representing generic game object.
     /// </summary>
-    abstract class GameObj
+    internal abstract class GameObj
     {
-        public int XColumn { get; set; }
-        public int YRow { get; set; }
-        public char ObjectChar { get; set; }
-        public bool Exists { get; set; }
-        public ConsoleColor Color { get; set; }
-        public List<ConsolePoint> AbsolutXyPoints { get; set; }
-
         /// <summary>
         ///     Generic constuctor.
         /// </summary>
@@ -27,5 +20,12 @@ namespace BlockDestroyer.GameObjects
             Color = color;
             AbsolutXyPoints = new List<ConsolePoint>();
         }
+
+        public int XColumn { get; set; }
+        public int YRow { get; set; }
+        public char ObjectChar { get; set; }
+        public bool Exists { get; set; }
+        public ConsoleColor Color { get; set; }
+        public List<ConsolePoint> AbsolutXyPoints { get; set; }
     }
 }

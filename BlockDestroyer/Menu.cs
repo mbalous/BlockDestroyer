@@ -6,8 +6,8 @@ namespace BlockDestroyer
 {
     internal class Menu
     {
-        private bool DidChoose { get; set; }
         private int _option;
+        private bool DidChoose { get; set; }
 
         public void Run()
         {
@@ -17,7 +17,7 @@ namespace BlockDestroyer
             Console.Clear();
             DisplayGraphics();
 
-            Thread readInput = new Thread(KeyReader) { Name = "readInputThread" };
+            Thread readInput = new Thread(KeyReader) {Name = "readInputThread"};
             readInput.Start();
 
             MenuPrinter();
@@ -119,7 +119,6 @@ namespace BlockDestroyer
                     break;
             }
         }
-
 
         /// <summary>
         ///     Function writing graphics stuff on screen.

@@ -20,7 +20,8 @@ namespace BlockDestroyer
             Console.ResetColor();
         }
 
-        public static void PrintAtPosition(int col, int row, string stringToPrint, ConsoleColor color = ConsoleColor.White)
+        public static void PrintAtPosition(int col, int row, string stringToPrint,
+            ConsoleColor color = ConsoleColor.White)
         {
             Console.SetCursorPosition(col, row);
             Console.ForegroundColor = color;

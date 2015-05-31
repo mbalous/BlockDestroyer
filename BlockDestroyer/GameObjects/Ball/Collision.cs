@@ -1,22 +1,59 @@
-﻿namespace BlockDestroyer.GameObjects.Ball
+﻿using System;
+
+namespace BlockDestroyer.GameObjects.Ball
 {
-    abstract class Collision
+    internal abstract class Collision
     {
+        protected Collision(ConsolePoint collisionPoint, int blockIndex = 0)
+        {
+            CollisionPoint = collisionPoint;
+            CollidedBlockIndex = blockIndex;
+        }
+
+        public int CollidedBlockIndex { get; set; }
+        public ConsolePoint CollisionPoint { get; set; }
+
     }
 
-    class LeftCollision : Collision
+    internal class LeftCollision : Collision
     {
+        public LeftCollision(ConsolePoint collisionPoint, int blockIndex = 0) : base(collisionPoint, blockIndex)
+        {
+        }
     }
 
-    class RightCollision : Collision
+    internal class RightCollision : Collision
     {
+        public RightCollision(ConsolePoint collisionPoint, int blockIndex = 0) : base(collisionPoint, blockIndex)
+        {
+        }
     }
 
-    class TopCollision : Collision
+    internal class TopCollision : Collision
     {
+        public TopCollision(ConsolePoint collisionPoint, int blockIndex = 0) : base(collisionPoint, blockIndex)
+        {
+        }
     }
 
-    class BottomCollision : Collision
+    internal class BottomCollision : Collision
     {
+        public BottomCollision(ConsolePoint collisionPoint, int blockIndex = 0) : base(collisionPoint, blockIndex)
+        {
+        }
+    }
+
+    internal class BoardCollision : Collision
+    {
+        public BoardCollision(ConsolePoint collisionPoint, int blockIndex = 0) : base(collisionPoint, blockIndex)
+        {
+        }
+    }
+
+    internal class BottomEdgeCollision : Collision
+    {
+        public BottomEdgeCollision(ConsolePoint collisionPoint, int blockIndex = 0) : base(collisionPoint, blockIndex)
+        {
+        }
     }
 }

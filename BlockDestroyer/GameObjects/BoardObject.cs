@@ -1,22 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 
 namespace BlockDestroyer.GameObjects
 {
     internal class BoardObject : GameObj
     {
-        /// <summary>
-        ///     Width of the board
-        /// </summary>
-        public byte Width { get; private set; }
-
-        /// <summary>
-        ///     dir of the board
-        ///     true = moving right
-        ///     false = moving left
-        /// </summary>
-        public bool Dir { get; set; }
-
         /// <summary>
         ///     BoardObject construcor
         /// </summary>
@@ -36,6 +25,18 @@ namespace BlockDestroyer.GameObjects
             AbsolutXyPoints = GetBoardExactPosition(xColumn, yRow, width);
         }
 
+        /// <summary>
+        ///     Width of the board
+        /// </summary>
+        public byte Width { get; private set; }
+
+        /// <summary>
+        ///     dir of the board
+        ///     true = moving right
+        ///     false = moving left
+        /// </summary>
+        public bool Dir { get; set; }
+
         private List<ConsolePoint> GetBoardExactPosition(int xColumn, int yRow, byte width)
         {
             List<ConsolePoint> boardConsolePoints = new List<ConsolePoint>(width);
@@ -44,6 +45,11 @@ namespace BlockDestroyer.GameObjects
                 boardConsolePoints.Add(new ConsolePoint(xColumn + i, yRow));
             }
             return boardConsolePoints;
+        }
+
+        public void SetBoardExactPosition()
+        {
+            AbsolutXyPoints = GetBoardExactPosition(XColumn, YRow, Width);
         }
     }
 }

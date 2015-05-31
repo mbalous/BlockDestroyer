@@ -1,20 +1,23 @@
 ﻿using System;
+using System.Threading;
 
 namespace BlockDestroyer
 {
-    static class Program
+    internal static class Program
     {
-        static void Main()
+        public static void Main()
         {
             Initialize();
-
+            SoundTrack soundTrack = new SoundTrack();
+            Thread soundtrackThread = new Thread(soundTrack.StartLoop);
+            soundtrackThread.Start();
 #if !DEBUG
             Menu mainMenu = new Menu();
             mainMenu.Run();
 #endif
             Game game = new Game();
             /* Parameter is game speed, 20 is optimal */
-            game.Start(20);
+            game.Start(60);
         }
 
         private static void Initialize()

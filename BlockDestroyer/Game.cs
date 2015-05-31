@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using BlockDestroyer.GameObjects;
 using BlockDestroyer.GameObjects.Ball;
@@ -17,20 +16,10 @@ namespace BlockDestroyer
 {
     internal class Game
     {
-        private readonly Random _randomGenerator;
+        private readonly int _bufferHeight;
+        private readonly int _bufferWidth;
         private readonly CollisionEngine _collisionEngine;
-
-
-        private bool IsGameRunning { get; set; }
-        private int Score { get; set; }
-
-
-        private BallObject Ball { get; set; }
-        private BoardObject Board { get; set; }
-        private List<BlockObject> BlockList { get; set; }
-
-        readonly int _bufferWidth;
-        readonly int _bufferHeight;
+        private readonly Random _randomGenerator;
 
         public Game()
         {
@@ -43,6 +32,11 @@ namespace BlockDestroyer
             _bufferHeight = Console.BufferHeight;
         }
 
+        private bool IsGameRunning { get; set; }
+        private int Score { get; set; }
+        private BallObject Ball { get; set; }
+        private BoardObject Board { get; set; }
+        private List<BlockObject> BlockList { get; set; }
 
         /// <summary>
         ///     Start the game.
@@ -57,52 +51,41 @@ namespace BlockDestroyer
             const int blockColumns = 13;
             const int blockRows = 5;
             const byte blockWidth = 7;
-            const byte boardWidth = 8;
+            const byte boardWidth = 10;
             const byte spaceBetweenBoards = 2;
 
             InitializeBlocksList(blockColumns, blockRows, blockWidth, spaceBetweenBoards);
-
-
+            
             Board = new BoardObject(
-                xColumn: (_bufferWidth / 2) - boardWidth,
+                xColumn: (_bufferWidth/2) - boardWidth,
                 yRow: _bufferHeight - 3,
                 width: boardWidth,
                 dir: _randomGenerator.Next(0, 2) == 0,
                 objectChar: '-',
                 exists: true,
                 color: ConsoleColor.Yellow);
-
+            
             Ball = new BallObject(
-                xColumn: _bufferWidth / 2,
-                yRow: _bufferHeight / 2,
-                dir: (_randomGenerator.Next(0, 2) == 0) ? (Direction)new UpLeft() : new UpRight(),
+                xColumn: _bufferWidth/2,
+                yRow: _bufferHeight/2,
+                dir: (_randomGenerator.Next(0, 2) == 0) ? (Direction) new UpLeft() : new UpRight(),
                 objectChar: 'O',
                 exists: true,
                 color: ConsoleColor.Red);
-
-            GenerateCorners();
             DrawEdges();
 
-            Thread inputThread = new Thread(ReadInput) { Name = "inputThread" };
+            Thread inputThread = new Thread(ReadInput) {Name = "inputThread"};
             inputThread.Start();
             GameLoop(gameSpeed);
         }
 
-        private void GenerateCorners()
-        {
-
-        }
-
         private void DrawEdges()
         {
-            /* Left edge */
             for (int i = 5; i < _bufferHeight - 1; i++)
             {
+                /* Left edge */
                 Writer.PrintAtPosition(col: 1, row: i, charToPrint: '║', color: ConsoleColor.Cyan);
-            }
-            /* Right edge */
-            for (int i = 5; i < _bufferHeight - 1; i++)
-            {
+                /* Right edge */
                 Writer.PrintAtPosition(col: _bufferWidth - 2, row: i, charToPrint: '║', color: ConsoleColor.Cyan);
             }
 
@@ -138,11 +121,17 @@ namespace BlockDestroyer
             while (IsGameRunning)
             {
                 PrintScore();
+
                 DrawBlocks();
-                MoveBoard();
-                DrawBoard();
+
                 MoveBall();
                 DrawBall();
+                
+
+                MoveBoard();
+                DrawBoard();
+                
+
                 Thread.Sleep(gameSpeed);
             }
         }
@@ -154,23 +143,36 @@ namespace BlockDestroyer
 
             ConsolePoint nextBallPosition = GetNextBallPosition();
 
-            Collision collison = _collisionEngine.DetectCollision(actualBallPosition, nextBallPosition, Board, BlockList);
+            Collision collision = _collisionEngine.DetectCollision(actualBallPosition, nextBallPosition, Board, BlockList);
 
-            if (collison is TopCollision)
+            if (collision != null)
+            {
+                if (collision.CollidedBlockIndex != 0)
+                {
+                    BlockList[collision.CollidedBlockIndex].Exists = false;
+                }
+            }
+
+
+            if (collision is TopCollision)
             {
                 FlipVerticalBallDirection();
             }
-            else if (collison is BottomCollision)
+            else if (collision is BottomCollision)
             {
                 FlipVerticalBallDirection();
             }
-            else if (collison is RightCollision)
+            else if (collision is RightCollision)
             {
-
+                FlipHorizontalBallDirection();
             }
-            else if (collison is LeftCollision)
+            else if (collision is LeftCollision)
             {
-
+                FlipHorizontalBallDirection();
+            }
+            else if (collision is BoardCollision)
+            {
+                FlipVerticalBallDirection();
             }
 
             if (Ball.Dir is UpLeft)
@@ -193,7 +195,26 @@ namespace BlockDestroyer
                 Ball.XColumn++;
                 Ball.YRow++;
             }
+        }
 
+        private void FlipHorizontalBallDirection()
+        {
+            if (Ball.Dir is UpLeft)
+            {
+                Ball.Dir = new UpRight();
+            }
+            else if (Ball.Dir is UpRight)
+            {
+                Ball.Dir = new UpLeft();
+            }
+            else if (Ball.Dir is DownLeft)
+            {
+                Ball.Dir = new DownRight();
+            }
+            else if (Ball.Dir is DownRight)
+            {
+                Ball.Dir = new DownLeft();
+            }
         }
 
         private void FlipVerticalBallDirection()
@@ -246,7 +267,6 @@ namespace BlockDestroyer
 
         private void DrawBoard()
         {
-            // Bug: when board is on the right end, screen shifts
             if (Board.Exists)
             {
                 string board = null;
@@ -254,7 +274,6 @@ namespace BlockDestroyer
                 {
                     board += Board.ObjectChar;
                 }
-
                 Writer.PrintAtPosition(Board.XColumn, Board.YRow, board, Board.Color);
             }
         }
@@ -262,10 +281,10 @@ namespace BlockDestroyer
         private void MoveBoard()
         {
             int leftEnd = 2;
-            int rightEnd = _bufferWidth - Board.Width - 2;
+            int rightEnd = _bufferWidth - Board.Width - 3;
 
             Writer.ClearPosition(Board.XColumn, Board.YRow, Board.Width);
-
+            Board.SetBoardExactPosition();
             /* Changing board dir if were on the end */
             if (Board.XColumn <= leftEnd)
                 Board.Dir = true;
@@ -273,9 +292,9 @@ namespace BlockDestroyer
                 Board.Dir = false;
 
             if (Board.Dir)
-                Board.XColumn += 1;
+                Board.XColumn += 2;
             else
-                Board.XColumn -= 1;
+                Board.XColumn -= 2;
         }
 
         private void ReadInput()
@@ -295,7 +314,6 @@ namespace BlockDestroyer
             }
         }
 
-
         /// <summary>
         ///     Function inicializes GameData.
         /// </summary>
@@ -309,18 +327,17 @@ namespace BlockDestroyer
                 {
                     BlockList.Add(
                         new BlockObject(
-                                xColumn: cols,
-                                yRow: rows,
-                                exists: true,
-                                width: blockWidth,
-                                spaces: spaces,
-                                objectChar: '█',
-                                isBonus: false)
+                            xColumn: cols,
+                            yRow: rows,
+                            exists: true,
+                            width: blockWidth,
+                            spaces: spaces,
+                            objectChar: '█',
+                            isBonus: false)
                         );
                 }
             }
         }
-
 
         /// <summary>
         ///     Draw the blocks from GameData
@@ -330,16 +347,22 @@ namespace BlockDestroyer
             foreach (BlockObject block in BlockList)
             {
                 ConsolePoint blockFirstPosition = block.AbsolutXyPoints[0];
-
                 string blck = null;
+
                 for (int i = 0; i < block.Width; i++)
-                    blck += block.ObjectChar;
-
+                {
+                    if (block.Exists)
+                    {
+                        blck += block.ObjectChar;
+                    }
+                    else
+                    {
+                        blck += " ";
+                    }
+                }
                 Writer.PrintAtPosition(blockFirstPosition.x, blockFirstPosition.y, blck, block.Color);
-
             }
         }
-
 
         /// <summary>
         ///     Function prints score above the score divider.
@@ -350,16 +373,14 @@ namespace BlockDestroyer
              * Draw score and lives
              * TODO: Implement lives
              */
-            Writer.PrintAtPosition(0, 0, String.Format("Score: {0}", Score), ConsoleColor.DarkRed);
+            Writer.PrintAtPosition(0, 0, string.Format("Score: {0}", Score), ConsoleColor.DarkRed);
         }
-
 
         /// <summary>
         ///     Function prints score divider.
         /// </summary>
         private void DrawScoreDivider()
         {
-
         }
     }
 }
