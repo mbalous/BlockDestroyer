@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 
 namespace BlockDestroyer.GameObjects
@@ -28,7 +29,7 @@ namespace BlockDestroyer.GameObjects
         /// <summary>
         ///     Width of the board
         /// </summary>
-        public byte Width { get; private set; }
+        public byte Width { get; set; }
 
         /// <summary>
         ///     dir of the board

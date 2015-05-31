@@ -55,7 +55,7 @@ namespace BlockDestroyer
             const byte spaceBetweenBoards = 2;
 
             InitializeBlocksList(blockColumns, blockRows, blockWidth, spaceBetweenBoards);
-            
+
             Board = new BoardObject(
                 xColumn: (_bufferWidth/2) - boardWidth,
                 yRow: _bufferHeight - 3,
@@ -64,7 +64,7 @@ namespace BlockDestroyer
                 objectChar: '-',
                 exists: true,
                 color: ConsoleColor.Yellow);
-            
+
             Ball = new BallObject(
                 xColumn: _bufferWidth/2,
                 yRow: _bufferHeight/2,
@@ -126,11 +126,9 @@ namespace BlockDestroyer
 
                 MoveBall();
                 DrawBall();
-                
 
                 MoveBoard();
                 DrawBoard();
-                
 
                 Thread.Sleep(gameSpeed);
             }
@@ -143,7 +141,8 @@ namespace BlockDestroyer
 
             ConsolePoint nextBallPosition = GetNextBallPosition();
 
-            Collision collision = _collisionEngine.DetectCollision(actualBallPosition, nextBallPosition, Board, BlockList);
+            Collision collision = _collisionEngine.DetectCollision(actualBallPosition, nextBallPosition, Board,
+                BlockList);
 
             if (collision != null)
             {
@@ -152,7 +151,6 @@ namespace BlockDestroyer
                     BlockList[collision.CollidedBlockIndex].Exists = false;
                 }
             }
-
 
             if (collision is TopCollision)
             {

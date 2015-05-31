@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace BlockDestroyer.GameObjects.Ball
@@ -40,7 +39,9 @@ namespace BlockDestroyer.GameObjects.Ball
             {
                 if (BlockList[i].Exists == false)
                     continue;
-                foreach (Collision collisionType in from point in BlockList[i].AbsolutXyPoints where point.x == NextBallPosition.x && point.y == NextBallPosition.y select FindBlockCollisionType(point, BlockList[i], i, ActualBallPosition))
+                foreach (Collision collisionType in from point in BlockList[i].AbsolutXyPoints
+                    where point.x == NextBallPosition.x && point.y == NextBallPosition.y
+                    select FindBlockCollisionType(point, BlockList[i], i, ActualBallPosition))
                 {
                     return collisionType;
                 }
@@ -62,7 +63,8 @@ namespace BlockDestroyer.GameObjects.Ball
             return null;
         }
 
-        private Collision FindBlockCollisionType(ConsolePoint point, BlockObject block, int blockIndex, ConsolePoint actualBallPosition)
+        private Collision FindBlockCollisionType(ConsolePoint point, BlockObject block, int blockIndex,
+            ConsolePoint actualBallPosition)
         {
             /* Ball impacted block from above */
             if (actualBallPosition.y < point.y)
@@ -88,7 +90,6 @@ namespace BlockDestroyer.GameObjects.Ball
                     }
                     return new BottomCollision(point, blockIndex);
                 }
-
             }
             /* Ball impacted block from beneath. */
             else if (actualBallPosition.y > point.y) // bottom

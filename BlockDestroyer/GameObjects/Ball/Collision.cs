@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BlockDestroyer.GameObjects.Ball
+﻿namespace BlockDestroyer.GameObjects.Ball
 {
     internal abstract class Collision
     {
@@ -12,7 +10,6 @@ namespace BlockDestroyer.GameObjects.Ball
 
         public int CollidedBlockIndex { get; set; }
         public ConsolePoint CollisionPoint { get; set; }
-
     }
 
     internal class LeftCollision : Collision
