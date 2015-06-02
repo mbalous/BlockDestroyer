@@ -18,48 +18,25 @@ namespace BlockDestroyer.GameObjects.Ball
             BoardPosition = board.AbsolutXyPoints;
             BlockList = blockList;
 
-            Collision collision = CheckForCornerCollision();
-            if (collision == null)
-            {
-                collision = CheckForBlockCollision();
-            }
+            /* If corner collision is null then chech for block collision */
+            Collision collision = CheckForCornerCollision() ?? CheckForBlockCollision();
             return collision;
         }
 
         private Collision CheckForBlockCollision()
         {
-            /*
-            return (from block in BlockList
-                from point in block.AbsolutXyPoints
-                where point.x == NextBallPosition.x && point.y == NextBallPosition.y
-                select FindBlockCollisionType(point, block, ActualBallPosition)).FirstOrDefault();
-             * */
-
             for (int i = 0; i < BlockList.Count - 1; i++)
             {
                 if (BlockList[i].Exists == false)
                     continue;
+                int i1 = i;
                 foreach (Collision collisionType in from point in BlockList[i].AbsolutXyPoints
                     where point.x == NextBallPosition.x && point.y == NextBallPosition.y
-                    select FindBlockCollisionType(point, BlockList[i], i, ActualBallPosition))
+                    select FindBlockCollisionType(point, BlockList[i1], i1, ActualBallPosition))
                 {
                     return collisionType;
                 }
             }
-
-            /*
-            foreach (BlockObject block in BlockList)
-            {
-                foreach (ConsolePoint point in block.AbsolutXyPoints)
-                {
-                    if (point.x == NextBallPosition.x && point.y == NextBallPosition.y)
-                    {
-                        Collision x = FindBlockCollisionType(point, block, ActualBallPosition);
-                        return x;
-                    }
-                }
-            }
-            */
             return null;
         }
 

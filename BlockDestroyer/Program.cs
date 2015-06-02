@@ -11,10 +11,10 @@ namespace BlockDestroyer
             SoundTrack soundTrack = new SoundTrack();
             Thread soundtrackThread = new Thread(soundTrack.StartLoop);
             soundtrackThread.Start();
-#if !DEBUG
+
             Menu mainMenu = new Menu();
             mainMenu.Run();
-#endif
+
             Game game = new Game();
             /* Parameter is game speed, 20 is optimal */
             game.Start(60);
