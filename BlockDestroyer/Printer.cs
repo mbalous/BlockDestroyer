@@ -10,7 +10,7 @@ namespace BlockDestroyer
     /// <summary>
     ///     Class using for writing strings or characters to line and row given in parameters.
     /// </summary>
-    internal static class Writer
+    internal static class Printer
     {
         public static void PrintAtPosition(int col, int row, char charToPrint, ConsoleColor color = ConsoleColor.White)
         {

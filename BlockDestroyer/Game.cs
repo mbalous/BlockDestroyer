@@ -60,7 +60,7 @@ namespace BlockDestroyer
             InitializeBoard(boardWidth);
             InitializeBall();
 
-            DrawEdges();
+            Drawer.DrawEdges(_bufferWidth, _bufferHeight);
 
             Thread inputThread = new Thread(ReadInput) {Name = "inputThread"};
             inputThread.Start();
@@ -90,56 +90,18 @@ namespace BlockDestroyer
                 color: ConsoleColor.Yellow);
         }
 
-        private void DrawEdges()
-        {
-            for (int i = 5; i < _bufferHeight - 1; i++)
-            {
-                /* Left edge */
-                Writer.PrintAtPosition(col: 1, row: i, charToPrint: '║', color: ConsoleColor.Cyan);
-                /* Right edge */
-                Writer.PrintAtPosition(col: _bufferWidth - 2, row: i, charToPrint: '║', color: ConsoleColor.Cyan);
-            }
-
-            /* TOP & bottom edge */
-            for (int i = 1; i < _bufferWidth - 1; i++)
-            {
-                /* TOP egde - score divider */
-                if (i == 1)
-                {
-                    /* TOP edge */
-                    Writer.PrintAtPosition(col: i, row: 5, charToPrint: '╔', color: ConsoleColor.Cyan);
-                    /* Bottom edge */
-                    Writer.PrintAtPosition(col: i, row: _bufferHeight - 2, charToPrint: '╚', color: ConsoleColor.Cyan);
-                    continue;
-                }
-                if (i == _bufferWidth - 2)
-                {
-                    /* TOP edge */
-                    Writer.PrintAtPosition(col: i, row: 5, charToPrint: '╗', color: ConsoleColor.Cyan);
-                    /* Bottom edge */
-                    Writer.PrintAtPosition(col: i, row: _bufferHeight - 2, charToPrint: '╝', color: ConsoleColor.Cyan);
-                    continue;
-                }
-                Writer.PrintAtPosition(col: i, row: 5, charToPrint: '═', color: ConsoleColor.Cyan);
-
-                /* Bottom egde */
-                Writer.PrintAtPosition(col: i, row: _bufferHeight - 2, charToPrint: '═', color: ConsoleColor.Cyan);
-            }
-        }
-
         private void GameLoop(int gameSpeed)
         {
             while (IsGameRunning)
             {
-                PrintLivesAndScore();
-
-                DrawBlocks();
+                Drawer.DrawLivesAndScore(Lives, Score);
+                Drawer.DrawBlocks(BlockList);
 
                 MoveBall();
-                DrawBall();
+                Drawer.DrawBall(Ball);
 
                 MoveBoard();
-                DrawBoard();
+                Drawer.DrawBoard(Board);
 
                 Thread.Sleep(gameSpeed);
             }
@@ -148,7 +110,7 @@ namespace BlockDestroyer
         private void MoveBall()
         {
             ConsolePoint actualBallPosition = new ConsolePoint(Ball.XColumn, Ball.YRow);
-            Writer.ClearPosition(actualBallPosition.x, actualBallPosition.y);
+            Printer.ClearPosition(actualBallPosition.x, actualBallPosition.y);
 
             ConsolePoint nextBallPosition = GetNextBallPosition();
 
@@ -211,8 +173,8 @@ namespace BlockDestroyer
         private void BallWasntCatched()
         {
             Lives--;
-            Writer.ClearPosition(Board.XColumn, Board.YRow, Board.Width);
-            Writer.ClearPosition(Ball.XColumn, Ball.YRow);
+            Printer.ClearPosition(Board.XColumn, Board.YRow, Board.Width);
+            Printer.ClearPosition(Ball.XColumn, Ball.YRow);
             InitializeBall();
             InitializeBoard(Board.Width);
         }
@@ -293,30 +255,12 @@ namespace BlockDestroyer
             return nextBallPosition;
         }
 
-        private void DrawBall()
-        {
-            Writer.PrintAtPosition(Ball.XColumn, Ball.YRow, Ball.ObjectChar, Ball.Color);
-        }
-
-        private void DrawBoard()
-        {
-            if (Board.Exists)
-            {
-                string board = null;
-                for (int i = 0; i < Board.Width; i++)
-                {
-                    board += Board.ObjectChar;
-                }
-                Writer.PrintAtPosition(Board.XColumn, Board.YRow, board, Board.Color);
-            }
-        }
-
         private void MoveBoard()
         {
             int leftEnd = 2;
             int rightEnd = _bufferWidth - Board.Width - 3;
 
-            Writer.ClearPosition(Board.XColumn, Board.YRow, Board.Width);
+            Printer.ClearPosition(Board.XColumn, Board.YRow, Board.Width);
             Board.SetBoardExactPosition();
             /* Changing board dir if were on the end */
             if (Board.XColumn <= leftEnd)
@@ -372,42 +316,6 @@ namespace BlockDestroyer
             }
         }
 
-        /// <summary>
-        ///     Draw the blocks from GameData
-        /// </summary>
-        private void DrawBlocks()
-        {
-            foreach (BlockObject block in BlockList)
-            {
-                ConsolePoint blockFirstPosition = block.AbsolutXyPoints[0];
-                string blck = null;
 
-                for (int i = 0; i < block.Width; i++)
-                {
-                    if (block.Exists)
-                    {
-                        blck += block.ObjectChar;
-                    }
-                    else
-                    {
-                        blck += " ";
-                    }
-                }
-                Writer.PrintAtPosition(blockFirstPosition.x, blockFirstPosition.y, blck, block.Color);
-            }
-        }
-
-        /// <summary>
-        ///     Function prints score above the score divider.
-        /// </summary>
-        private void PrintLivesAndScore()
-        {
-            /* 
-             * Draw score and lives
-             * TODO: Implement lives
-             */
-            Writer.PrintAtPosition(0, 0, string.Format("Score: {0}", Score), ConsoleColor.DarkRed);
-            Writer.PrintAtPosition(0, 1, string.Format("Lives: {0}", Lives), ConsoleColor.DarkMagenta);
-        }
     }
 }

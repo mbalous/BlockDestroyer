@@ -6,12 +6,12 @@ namespace BlockDestroyer.GameObjects
     /// <summary>
     ///     Class representing generic game object.
     /// </summary>
-    internal abstract class GameObj
+    internal abstract class GameObject
     {
         /// <summary>
         ///     Generic constuctor.
         /// </summary>
-        protected GameObj(int xColumn, int yRow, char objectChar, bool exists, ConsoleColor color = ConsoleColor.White)
+        protected GameObject(int xColumn, int yRow, char objectChar, bool exists, ConsoleColor color = ConsoleColor.White)
         {
             XColumn = xColumn;
             YRow = yRow;

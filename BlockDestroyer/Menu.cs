@@ -141,7 +141,7 @@ namespace BlockDestroyer
                 Console.WriteLine(row);
 
             for (int i = 0; i < Console.WindowWidth; i++) // Divider
-                Writer.PrintAtPosition(i, 10, '-');
+                Printer.PrintAtPosition(i, 10, '-');
 
             Console.ResetColor();
         }

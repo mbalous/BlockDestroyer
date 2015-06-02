@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BlockDestroyer.GameObjects
 {
-    internal class BoardObject : GameObj
+    internal class BoardObject : GameObject
     {
         /// <summary>
         ///     BoardObject construcor

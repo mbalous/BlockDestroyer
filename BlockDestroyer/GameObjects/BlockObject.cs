@@ -6,7 +6,7 @@ namespace BlockDestroyer.GameObjects
     /// <summary>
     ///     Class representing sigle game block.
     /// </summary>
-    internal class BlockObject : GameObj
+    internal class BlockObject : GameObject
     {
         public BlockObject(int xColumn, int yRow, bool exists, byte width, byte spaces, char objectChar, bool isBonus, ConsoleColor color = ConsoleColor.White)
             : base(xColumn, yRow, objectChar, exists, color)
