@@ -24,7 +24,7 @@ namespace BlockDestroyer
                     else
                         blck += " ";
                 }
-                Printer.PrintAtPosition(blockFirstPosition.x, blockFirstPosition.y, blck, block.Color);
+                Printer.PrintAtPosition(blockFirstPosition.X, blockFirstPosition.Y, blck, block.Color);
             }
         }
 

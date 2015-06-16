@@ -18,7 +18,7 @@ namespace BlockDestroyer.GameObjects.Ball
             BoardPosition = board.AbsolutXyPoints;
             BlockList = blockList;
 
-            /* If corner collision is null then chech for block collision */
+            /* If corner collision is null then check for block collision */
             Collision collision = CheckForCornerCollision() ?? CheckForBlockCollision();
             return collision;
         }
@@ -31,7 +31,7 @@ namespace BlockDestroyer.GameObjects.Ball
                     continue;
                 int i1 = i;
                 foreach (Collision collisionType in from point in BlockList[i].AbsolutXyPoints
-                    where point.x == NextBallPosition.x && point.y == NextBallPosition.y
+                    where point.X == NextBallPosition.X && point.Y == NextBallPosition.Y
                     select FindBlockCollisionType(point, BlockList[i1], i1, ActualBallPosition))
                 {
                     return collisionType;
@@ -40,57 +40,66 @@ namespace BlockDestroyer.GameObjects.Ball
             return null;
         }
 
-        private Collision FindBlockCollisionType(ConsolePoint point, BlockObject block, int blockIndex,
+
+        /// <summary>
+        ///     Find which collision happened.
+        /// </summary>
+        /// <param name="collisionPoint"></param>
+        /// <param name="block"></param>
+        /// <param name="blockIndex"></param>
+        /// <param name="actualBallPosition"></param>
+        /// <returns></returns>
+        private Collision FindBlockCollisionType(ConsolePoint collisionPoint, BlockObject block, int blockIndex,
             ConsolePoint actualBallPosition)
         {
             /* Ball impacted block from above */
-            if (actualBallPosition.y < point.y)
+            if (actualBallPosition.Y < collisionPoint.Y)
             {
                 /* TopLeft impact */
-                if (actualBallPosition.x < point.x)
+                if (actualBallPosition.X < collisionPoint.X)
                 {
                     /* Ball colided on the left side of the block */
-                    if (point == block.AbsolutXyPoints[0])
+                    if (collisionPoint == block.AbsolutXyPoints[0])
                     {
-                        return new RightCollision(point, blockIndex);
+                        return new RightCollision(collisionPoint, blockIndex);
                     }
-                    return new BottomCollision(point, blockIndex);
+                    return new BottomCollision(collisionPoint, blockIndex);
                 }
 
                 /* TopRight impact */
-                if (actualBallPosition.x > point.x)
+                if (actualBallPosition.X > collisionPoint.X)
                 {
                     /* Ball collided on the right side of the block*/
-                    if (point == block.AbsolutXyPoints[block.Width - 1])
+                    if (collisionPoint == block.AbsolutXyPoints[block.Width - 1])
                     {
-                        return new LeftCollision(point, blockIndex);
+                        return new LeftCollision(collisionPoint, blockIndex);
                     }
-                    return new BottomCollision(point, blockIndex);
+                    return new BottomCollision(collisionPoint, blockIndex);
                 }
             }
             /* Ball impacted block from beneath. */
-            else if (actualBallPosition.y > point.y) // bottom
+            else if (actualBallPosition.Y > collisionPoint.Y) // bottom
             {
                 /* BottomLeft impact */
-                if (actualBallPosition.x < point.x)
+                if (actualBallPosition.X < collisionPoint.X)
                 {
                     /* Ball colided on the left side of the block */
-                    if (point == block.AbsolutXyPoints[0])
+                    if (collisionPoint == block.AbsolutXyPoints[0])
                     {
-                        return new RightCollision(point, blockIndex);
+                        return new RightCollision(collisionPoint, blockIndex);
                     }
-                    return new TopCollision(point, blockIndex);
+                    return new TopCollision(collisionPoint, blockIndex);
                 }
 
                 /* BottomRight impact */
-                if (actualBallPosition.x > point.x)
+                if (actualBallPosition.X > collisionPoint.X)
                 {
                     /* Ball collided on the right side of the block*/
-                    if (point == block.AbsolutXyPoints[block.Width - 1])
+                    if (collisionPoint == block.AbsolutXyPoints[block.Width - 1])
                     {
-                        return new LeftCollision(point, blockIndex);
+                        return new LeftCollision(collisionPoint, blockIndex);
                     }
-                    return new TopCollision(point, blockIndex);
+                    return new TopCollision(collisionPoint, blockIndex);
                 }
             }
             return null;
@@ -104,33 +113,33 @@ namespace BlockDestroyer.GameObjects.Ball
             const int rightCornerCol = 123;
 
             /* TOP */
-            if (NextBallPosition.y <= topCornerRow)
+            if (NextBallPosition.Y <= topCornerRow)
             {
                 return new TopCollision(NextBallPosition);
             }
 
             /* Board */
             int width = BoardPosition.Count;
-            if (NextBallPosition.y == BoardPosition[0].y && NextBallPosition.x >= BoardPosition[0].x &&
-                NextBallPosition.x <= BoardPosition[width - 1].x)
+            if (NextBallPosition.Y == BoardPosition[0].Y && NextBallPosition.X >= BoardPosition[0].X &&
+                NextBallPosition.X <= BoardPosition[width - 1].X)
             {
                 return new BoardCollision(NextBallPosition);
             }
 
             /* Bottom */
-            if (NextBallPosition.y >= botCornerRow)
+            if (NextBallPosition.Y >= botCornerRow)
             {
                 return new BottomEdgeCollision(NextBallPosition);
             }
 
             /* Left */
-            if (NextBallPosition.x <= leftCornerCol)
+            if (NextBallPosition.X <= leftCornerCol)
             {
                 return new LeftCollision(NextBallPosition);
             }
 
             /* Right */
-            if (NextBallPosition.x >= rightCornerCol)
+            if (NextBallPosition.X >= rightCornerCol)
             {
                 return new RightCollision(NextBallPosition);
             }

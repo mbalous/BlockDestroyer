@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
-
 namespace BlockDestroyer.GameObjects
 {
     internal class BoardObject : GameObject

@@ -1,16 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading;
 using BlockDestroyer.GameObjects;
 using BlockDestroyer.GameObjects.Ball;
-
-// ReSharper disable RedundantArgumentName
-// ReSharper disable RedundantArgumentNameForLiteralExpression
-
-/*
- * Columns stands for xColumn axis
- * Rows stands for yRow axis
- */
 
 namespace BlockDestroyer
 {
@@ -69,9 +62,7 @@ namespace BlockDestroyer
 
         private void InitializeBall()
         {
-            Ball = new BallObject(
-                xColumn: _bufferWidth/2,
-                yRow: _bufferHeight/2,
+            Ball = new BallObject(_bufferWidth/2, _bufferHeight/2,
                 dir: (_randomGenerator.Next(0, 2) == 0) ? (Direction) new UpLeft() : new UpRight(),
                 objectChar: 'O',
                 exists: true,
@@ -80,21 +71,15 @@ namespace BlockDestroyer
 
         private void InitializeBoard(byte boardWidth)
         {
-            Board = new BoardObject(
-                xColumn: (_bufferWidth/2) - boardWidth,
-                yRow: _bufferHeight - 3,
-                width: boardWidth,
-                dir: _randomGenerator.Next(0, 2) == 0,
-                objectChar: '-',
-                exists: true,
-                color: ConsoleColor.Yellow);
+            Board = new BoardObject((_bufferWidth/2) - boardWidth, _bufferHeight - 3, boardWidth,
+                _randomGenerator.Next(0, 2) == 0, '-', true, ConsoleColor.Yellow);
         }
 
         private void GameLoop(int gameSpeed)
         {
             while (IsGameRunning)
             {
-                Drawer.DrawLivesAndScore(Lives, Score);
+                Drawer.DrawLivesAndScore(Score, Lives);
                 Drawer.DrawBlocks(BlockList);
 
                 MoveBall();
@@ -110,7 +95,7 @@ namespace BlockDestroyer
         private void MoveBall()
         {
             ConsolePoint actualBallPosition = new ConsolePoint(Ball.XColumn, Ball.YRow);
-            Printer.ClearPosition(actualBallPosition.x, actualBallPosition.y);
+            Printer.ClearPosition(actualBallPosition.X, actualBallPosition.Y);
 
             ConsolePoint nextBallPosition = GetNextBallPosition();
 
@@ -134,6 +119,10 @@ namespace BlockDestroyer
             {
                 BallWasntCatched();
                 return;
+            }
+            else if (collision is BottomCollision)
+            {
+                FlipVerticalBallDirection();
             }
             else if (collision is RightCollision)
             {
@@ -303,19 +292,10 @@ namespace BlockDestroyer
                 for (short cols = 0; cols < blockColumns; cols++)
                 {
                     BlockList.Add(
-                        new BlockObject(
-                            xColumn: cols,
-                            yRow: rows,
-                            exists: true,
-                            width: blockWidth,
-                            spaces: spaces,
-                            objectChar: '█',
-                            isBonus: (_randomGenerator.Next(0, 9) == 0))
+                        new BlockObject(cols, rows, true, blockWidth, spaces, '█', (_randomGenerator.Next(0, 9) == 0))
                         );
                 }
             }
         }
-
-
     }
 }

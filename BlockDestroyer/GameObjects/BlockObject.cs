@@ -51,7 +51,7 @@ namespace BlockDestroyer.GameObjects
                     blockConsolePoints.Add(new ConsolePoint((xColumn * (width + spaces)) + 5, row));
                     continue;
                 }
-                blockConsolePoints.Add(new ConsolePoint(blockConsolePoints[0].x + i, row));
+                blockConsolePoints.Add(new ConsolePoint(blockConsolePoints[0].X + i, row));
             }
             return blockConsolePoints;
         }
