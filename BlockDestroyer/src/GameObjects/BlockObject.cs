@@ -17,9 +17,7 @@ namespace BlockDestroyer.GameObjects
             AbsolutXyPoints = GetBlockExactPosition(xColumn, yRow, width, spaces);
 
             if (isBonus)
-            {
                 Color = ConsoleColor.Red;
-            }
         }
 
         /// <summary>

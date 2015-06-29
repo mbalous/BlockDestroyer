@@ -1,19 +1,42 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace BlockDestroyer
 {
     internal class SoundTrack
     {
-        public void StartLoop()
+        private static bool _loopActive;
+
+        /// <summary>
+        ///     Start the sound loop.
+        /// </summary>
+        internal static void StartLoop()
         {
-            while (true)
-            {
+            _loopActive = true;
+
+            while (_loopActive)
                 Play();
+        }
+
+
+        /// <summary>
+        ///     Stop the sound loop.
+        /// </summary>
+        internal static void StopLoop()
+        {
+            _loopActive = false;
+            try
+            {
+                Thread.CurrentThread.Abort();
+            }
+            catch (ThreadStateException threadStateException)
+            {
+
             }
         }
 
-        private void Play()
+        private static void Play()
         {
             Console.Beep(659, 125);
             Console.Beep(659, 125);

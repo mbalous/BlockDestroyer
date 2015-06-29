@@ -7,9 +7,8 @@ namespace BlockDestroyer
     {
         public static void Main()
         {
-            Initialize();
-            SoundTrack soundTrack = new SoundTrack();
-            Thread soundtrackThread = new Thread(soundTrack.StartLoop);
+            Initialize();            
+            Thread soundtrackThread = new Thread(SoundTrack.StartLoop);
             soundtrackThread.Start();
 
             Menu mainMenu = new Menu();

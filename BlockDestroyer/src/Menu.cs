@@ -30,7 +30,8 @@ namespace BlockDestroyer
                 {0, "Play Game"},
                 {1, "High scores"},
                 {2, "About"},
-                {3, "Exit"}
+                {3, "Sound"},
+                {4, "Exit"}
             };
 
             while (true)
@@ -61,7 +62,7 @@ namespace BlockDestroyer
 
         private void NextOption()
         {
-            if (_option < 3)
+            if (_option < 4)
                 _option++;
         }
 
@@ -99,18 +100,21 @@ namespace BlockDestroyer
         {
             switch (_option)
             {
-                case 0:
+                case 0: //Play
                     Console.Clear();
                     break;
-                case 1:
+                case 1: //High Score
                     /* TODO: Implement high scores */
                     Environment.Exit(_option);
                     break;
-                case 2:
+                case 2: //About
                     /* TODO: Implement about */
                     Environment.Exit(_option);
                     break;
-                case 3:
+                case 3: //Sound
+                    SoundTrack.StopLoop();
+                    break;
+                case 4: //Exit
                     Environment.Exit(_option);
                     break;
             }
