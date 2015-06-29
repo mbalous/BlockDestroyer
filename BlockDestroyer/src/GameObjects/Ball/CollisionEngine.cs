@@ -32,7 +32,7 @@ namespace BlockDestroyer.GameObjects.Ball
                 int i1 = i;
                 foreach (Collision collisionType in from point in BlockList[i].AbsolutXyPoints
                     where point.X == NextBallPosition.X && point.Y == NextBallPosition.Y
-                    select FindBlockCollisionType(point, BlockList[i1], i1, ActualBallPosition))
+                    select ResolveBlockCollisionType(point, BlockList[i1], i1, ActualBallPosition))
                 {
                     return collisionType;
                 }
@@ -40,16 +40,10 @@ namespace BlockDestroyer.GameObjects.Ball
             return null;
         }
 
-
         /// <summary>
         ///     Find which collision happened.
         /// </summary>
-        /// <param name="collisionPoint"></param>
-        /// <param name="block"></param>
-        /// <param name="blockIndex"></param>
-        /// <param name="actualBallPosition"></param>
-        /// <returns></returns>
-        private Collision FindBlockCollisionType(ConsolePoint collisionPoint, BlockObject block, int blockIndex,
+        private Collision ResolveBlockCollisionType(ConsolePoint collisionPoint, BlockObject block, int blockIndex,
             ConsolePoint actualBallPosition)
         {
             /* Ball impacted block from above */

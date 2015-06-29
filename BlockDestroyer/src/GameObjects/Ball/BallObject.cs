@@ -14,6 +14,8 @@ namespace BlockDestroyer.GameObjects.Ball
         public Direction Dir { get; set; }
     }
 
+    /* Various directions of the ball */
+
     internal abstract class Direction
     {
     }

@@ -37,7 +37,7 @@
     <OutputPath>bin\x64\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
@@ -48,7 +48,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
@@ -86,20 +86,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Drawer.cs" />
-    <Compile Include="GameObjects\Ball\BallObject.cs" />
-    <Compile Include="GameObjects\Ball\Collision.cs" />
-    <Compile Include="GameObjects\Ball\CollisionEngine.cs" />
-    <Compile Include="GameObjects\BlockObject.cs" />
-    <Compile Include="ConsolePoint.cs" />
-    <Compile Include="Game.cs" />
-    <Compile Include="GameObjects\GameObject.cs" />
-    <Compile Include="GameObjects\BoardObject.cs" />
-    <Compile Include="Menu.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="src\Drawer.cs" />
+    <Compile Include="src\GameObjects\Ball\BallObject.cs" />
+    <Compile Include="src\GameObjects\Ball\Collision.cs" />
+    <Compile Include="src\GameObjects\Ball\CollisionEngine.cs" />
+    <Compile Include="src\GameObjects\BlockObject.cs" />
+    <Compile Include="src\ConsolePoint.cs" />
+    <Compile Include="src\Game.cs" />
+    <Compile Include="src\GameObjects\GameObject.cs" />
+    <Compile Include="src\GameObjects\BoardObject.cs" />
+    <Compile Include="src\Menu.cs" />
+    <Compile Include="src\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SoundTrack.cs" />
-    <Compile Include="Printer.cs" />
+    <Compile Include="src\SoundTrack.cs" />
+    <Compile Include="src\Printer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -28,7 +28,6 @@ namespace BlockDestroyer
             }
         }
 
-
         /// <summary>
         ///     Prints score above the score divider.
         /// </summary>
@@ -37,7 +36,6 @@ namespace BlockDestroyer
             Printer.PrintAtPosition(0, 0, string.Format("Score: {0}", score), ConsoleColor.DarkRed);
             Printer.PrintAtPosition(0, 1, string.Format("Lives: {0}", lives), ConsoleColor.DarkMagenta);
         }
-
 
         /// <summary>
         ///     Draws edges of the game field.
@@ -81,7 +79,6 @@ namespace BlockDestroyer
             }
         }
 
-
         /// <summary>
         ///     Draws the ball.
         /// </summary>
@@ -90,7 +87,6 @@ namespace BlockDestroyer
         {
             Printer.PrintAtPosition(ball.XColumn, ball.YRow, ball.ObjectChar, ball.Color);
         }
-
 
         /// <summary>
         ///     Draws the board.

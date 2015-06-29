@@ -11,7 +11,8 @@ namespace BlockDestroyer.GameObjects
         /// <summary>
         ///     Generic constuctor.
         /// </summary>
-        protected GameObject(int xColumn, int yRow, char objectChar, bool exists, ConsoleColor color = ConsoleColor.White)
+        protected GameObject(int xColumn, int yRow, char objectChar, bool exists,
+            ConsoleColor color = ConsoleColor.White)
         {
             XColumn = xColumn;
             YRow = yRow;

@@ -76,12 +76,8 @@ namespace BlockDestroyer
             while (true)
             {
                 ConsoleKey pressedKey = Console.ReadKey(true).Key;
-                /* In order to detect numerous keys pressed at once */
 
-                /*
-                while (Console.KeyAvailable)
-                    Console.ReadKey(true);
-                */
+                /* In order to detect numerous keys pressed at once */
                 switch (pressedKey)
                 {
                     case ConsoleKey.UpArrow:

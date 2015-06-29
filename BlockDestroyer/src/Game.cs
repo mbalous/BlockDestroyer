@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading;
 using BlockDestroyer.GameObjects;
 using BlockDestroyer.GameObjects.Ball;
@@ -35,7 +34,7 @@ namespace BlockDestroyer
         /// <summary>
         ///     Start the game.
         /// </summary>
-        /// <param name="gameSpeed">Aproximate duration of one tick in miliseconds.</param>
+        /// <param name="gameSpeed">Sleep time between game cycle.</param>
         public void Start(int gameSpeed)
         {
             IsGameRunning = true;
@@ -110,7 +109,6 @@ namespace BlockDestroyer
                     BlockDestroyed(destryoedBlock);
                 }
             }
-
             if (collision is TopCollision)
             {
                 FlipVerticalBallDirection();
@@ -263,6 +261,9 @@ namespace BlockDestroyer
                 Board.XColumn -= 2;
         }
 
+        /// <summary>
+        ///     Read the user input.
+        /// </summary>
         private void ReadInput()
         {
             /* Moving the board */
@@ -281,7 +282,7 @@ namespace BlockDestroyer
         }
 
         /// <summary>
-        ///     Function inicializes GameData.
+        ///     Initialize game data.
         /// </summary>
         private void InitializeBlocksList(short blockColumns, short blockRows, byte blockWidth, byte spaces = 2)
         {
