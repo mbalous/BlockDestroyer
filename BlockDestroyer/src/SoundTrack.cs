@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace BlockDestroyer
 {
-    internal class SoundTrack
+    internal static class SoundTrack
     {
         private static bool _loopActive;
 
@@ -32,7 +32,7 @@ namespace BlockDestroyer
             }
             catch (ThreadStateException threadStateException)
             {
-
+                // Ignored
             }
         }
 

@@ -7,21 +7,21 @@ namespace BlockDestroyer
     {
         public static void Main()
         {
-            Initialize();            
-            Thread soundtrackThread = new Thread(SoundTrack.StartLoop);
+            Initialize();
+            Thread soundtrackThread = new Thread(SoundTrack.StartLoop) { Name = "soundTrackThread" };
             soundtrackThread.Start();
+            ShowMenu();
+        }
 
+        public static void ShowMenu()
+        {
             Menu mainMenu = new Menu();
-            mainMenu.Run();
-
-            Game game = new Game();
-            /* Parameter is game speed, 60 is optimal */
-            game.Start(60);
+            mainMenu.Display();
         }
 
         private static void Initialize()
         {
-            Console.Title = "**BlockObject Destroyer**";
+            Console.Title = "**Block Destroyer**";
             Console.CursorVisible = false;
 
             Console.BufferHeight = Console.WindowHeight = 40;

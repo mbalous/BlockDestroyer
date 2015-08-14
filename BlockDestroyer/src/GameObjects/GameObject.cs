@@ -9,7 +9,7 @@ namespace BlockDestroyer.GameObjects
     internal abstract class GameObject
     {
         /// <summary>
-        ///     Generic constuctor.
+        ///     Generic constructor.
         /// </summary>
         protected GameObject(int xColumn, int yRow, char objectChar, bool exists,
             ConsoleColor color = ConsoleColor.White)

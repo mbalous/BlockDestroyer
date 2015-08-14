@@ -1,129 +1,131 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Contracts;
 using System.Threading;
 
 namespace BlockDestroyer
 {
     internal class Menu
     {
-        private int _option;
-        private bool DidChoose { get; set; }
+        private Choices _selectedChoice;
+        private Difficulty _selectedDifficulty;
+        private readonly List<Choice> _choices;
 
-        public void Run()
+        struct Choice
         {
-            /* First option is selected */
-            _option = 0;
+            public readonly string name;
+            public readonly Choices choice;
 
-            Console.Clear();
-            DisplayGraphics();
-
-            Thread readInput = new Thread(KeyReader) {Name = "readInputThread"};
-            readInput.Start();
-
-            MenuPrinter();
+            public Choice(Choices choice)
+            {
+                this.choice = choice;
+                this.name = Enum.GetName(typeof(Choices), choice)?.Replace('_', ' ');
+            }
         }
 
-        private void MenuPrinter()
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
+        enum Choices
         {
-            Dictionary<int, string> menuItems = new Dictionary<int, string>
+            Play_game,
+            Change_difficulty,
+            High_scores,
+            Toggle_sound,
+            About,
+            Exit_game
+        }
+
+        public Menu()
+        {
+            _choices = new List<Choice>
             {
-                {0, "Play Game"},
-                {1, "High scores"},
-                {2, "About"},
-                {3, "Sound"},
-                {4, "Exit"}
+                new Choice(Choices.Play_game),
+                new Choice(Choices.Change_difficulty),
+                new Choice(Choices.High_scores),
+                new Choice(Choices.Toggle_sound),
+                new Choice(Choices.About),
+                new Choice(Choices.Exit_game)
             };
+        }
 
-            while (true)
+        public void Display()
+        {
+            Console.Clear();
+            DisplayMenuGfx();
+
+            // First option is selected
+            _selectedChoice = 0;
+            _selectedDifficulty = Difficulty.Easy;
+
+            Thread readInputThread = new Thread(KeyReader) { Name = "readInputThread" };
+            readInputThread.Start();
+        }
+
+        private void DisplayMenu()
+        {
+            // Loop which changes color of selected item.
+            Console.SetCursorPosition(0, 20);
+            for (int i = 0; i < _choices.Count; i++)
             {
-                lock (this)
+                if (_selectedChoice == _choices[i].choice)
                 {
-                    if (DidChoose)
-                        return;
-
-                    Console.SetCursorPosition(0, 20);
-                    for (int i = 0; i < menuItems.Count; i++)
-                    {
-                        if (i == _option)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine(menuItems[i]);
-                            Console.ResetColor();
-                        }
-                        else
-                        {
-                            Console.WriteLine(menuItems[i]);
-                        }
-                    }
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine(_choices[i].name);
+                    Console.ResetColor();
                 }
-                Thread.Sleep(50);
+                else
+                {
+                    Console.WriteLine(_choices[i].name);
+                }
             }
         }
 
         private void NextOption()
         {
-            if (_option < 4)
-                _option++;
+            if (_selectedChoice < (Choices)_choices.Count)
+                _selectedChoice++;
         }
 
-        private void PrevOption()
+        private void PreviousOption()
         {
-            if (_option > 0)
-                _option--;
+            if (_selectedChoice > 0)
+                _selectedChoice--;
         }
 
         private void KeyReader()
         {
             while (true)
             {
+                DisplayMenu();
                 ConsoleKey pressedKey = Console.ReadKey(true).Key;
-
                 /* In order to detect numerous keys pressed at once */
                 switch (pressedKey)
                 {
                     case ConsoleKey.UpArrow:
-                        PrevOption();
+                        PreviousOption();
                         break;
                     case ConsoleKey.DownArrow:
                         NextOption();
                         break;
                     case ConsoleKey.Enter:
-                        Console.Clear();
-                        DidChoose = true;
-                        OptionSelected();
+                        SelectOption();
                         return;
                 }
             }
         }
 
-        private void OptionSelected()
+        private void SelectOption()
         {
-            switch (_option)
+            switch (_selectedChoice)
             {
-                case 0: //Play
-                    Console.Clear();
-                    break;
-                case 1: //High Score
-                    /* TODO: Implement high scores */
-                    Environment.Exit(_option);
-                    break;
-                case 2: //About
-                    /* TODO: Implement about */
-                    Environment.Exit(_option);
-                    break;
-                case 3: //Sound
-                    SoundTrack.StopLoop();
-                    break;
-                case 4: //Exit
-                    Environment.Exit(_option);
-                    break;
+                
             }
         }
 
         /// <summary>
         ///     Function writing graphics stuff on screen.
         /// </summary>
-        private static void DisplayGraphics()
+        private static void DisplayMenuGfx()
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
             string[] blockStrings =

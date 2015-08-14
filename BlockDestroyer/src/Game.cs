@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using BlockDestroyer.GameObjects;
 using BlockDestroyer.GameObjects.Ball;
@@ -35,11 +36,24 @@ namespace BlockDestroyer
         ///     Start the game.
         /// </summary>
         /// <param name="gameSpeed">Sleep time between game cycle.</param>
-        public void Start(int gameSpeed)
+        public void Start(int gameSpeed, Difficulty difficulty)
         {
             IsGameRunning = true;
             Score = 0;
-            Lives = 3;
+            switch (difficulty)
+            {
+                case Difficulty.Easy:
+                    Lives = 5;
+                    break;
+                case Difficulty.Normal:
+                    Lives = 3;
+                    break;
+                case Difficulty.Hard:
+                    Lives = 1;
+                    break;
+                default:
+                    throw new Exception("Invalid difficulty");
+            }
 
             /* GAME PARAMETERS */
             const int blockColumns = 13;
