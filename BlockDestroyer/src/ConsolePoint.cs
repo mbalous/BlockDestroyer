@@ -3,7 +3,7 @@
     /// <summary>
     ///     Class representing exact position in console windows.
     /// </summary>
-    internal class ConsolePoint
+    internal struct ConsolePoint
     {
         public readonly int X;
         public readonly int Y;
